@@ -1,16 +1,12 @@
-Hayes Group
-New Student Orientation
-Version 2023-03-09
+# Hayes Group New Student Orientation
  
-1 Preliminaries
-1.1 Expectations
-Lab culture, work load, and professionalism WORKING HERE
-1.2 Notation
-Code and syntax will appear throughout this tutorial using the Courier New font. Commands you should type into the command prompt will begin with “> ”; don’t type that part. If you see panteater, replace that with your username.
-1.3 Setup
-Have Dr. Hayes email rcic-request@uci.edu to have you added to the rhayes1_lab_share group and the rhayes1_lab account.
- 
-Email Yi-San to request office keys (y.chang@uci.edu).
+See lab values and expectations in  
+[Expectations.md](Expectations.md)
+
+See the procedures for joining the group in
+[Startup.md](Startup.md)
+
+
 1.4 Lab Resources
 Your home directory doesn't have much room (50 Mb). My home directory is
 /data/homezvol0/rhayes1
@@ -356,3 +352,7 @@ And maybe MSLD paper? Also implicit constraints, and RNase H paper.
 6.3 Homeless
 Link to group meeting directions
 https://docs.google.com/document/d/1AGdWI6pEpkVlZ0vJh8WUR1ay7AzAAS7NqA18qJkE0q8/edit?usp=sharing
+
+
+1.2 Notation
+Code and syntax will appear throughout this tutorial using the Courier New font. Commands you should type into the command prompt will begin with “> ”; don’t type that part. If you see panteater, replace that with your username.
