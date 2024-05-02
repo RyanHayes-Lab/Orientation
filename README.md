@@ -3,45 +3,13 @@
 See lab values and expectations in  
 [Expectations.md](Expectations.md)
 
-See the procedures for joining the group in
+See the procedures for joining the group in  
 [Startup.md](Startup.md)
 
+The first step to joining a computational lab is learning how to use linux  
+[Cluster.md](Cluster.md)
 
-1.4 Lab Resources
-Your home directory doesn't have much room (50 Mb). My home directory is
-/data/homezvol0/rhayes1
-if you ever need to look at it. A copy of the CHARMM executable is available in my home directory at
-/data/homezvol0/rhayes1/CHARMM_EXE/gnu/charmm
- 
-Our group has just 1 Tb of CRSP storage. It is located at
-/share/crsp/lab/rhayes1
-This space is internet accessible, but is inconvenient to use because there are limits on the number of files in addition to the amount of storage. Use BeeGFS instead for most applications. Our group does store git repositories for various softwares we use in CRSP. They are located in
-/share/crsp/lab/rhayes1/share/git
- 
-Our group has 25 Tb of BeeGFS storage. It is located at
-/dfs8/rhayes1_lab
-You should make a directory here with your username to hold your data.
-> cd /dfs8/rhayes1_lab
-> mkdir panteater
-The command
-> dfsquotas rhayes1 dfs8
-will tell you how much space we have left. Don't let it get to 0, or jobs will crash. Ask Dr. Hayes to buy more, or clean out some old files.
-
-There are some issues with copying to and from BeeGFS. Read about how to copy files on BeeGFS from this link
-https://rcic.uci.edu/storage/beegfs-howtos.html
-once you’ve become more familiar with bash and linux and the scp command.
 2 Using bash and linux to Access the Cluster
-2.1 Learn to Use bash and linux
-The place you’ll be using bash is on the hpc3 cluster, as well as on your local machine to interact with the cluster. You will be accessing the cluster through a text based interface called the terminal. On Mac, terminal is a separate program, which you should place on your dock. On Windows, you can activate WSL and run commands through the windows terminal, or else you can download and install Putty for terminal access and WinSCP for file transfer. Use the former option (WSL) if possible. If you use Linux, you probably already know what a terminal is.
-
-In order to log in to the hpc3 cluster, you can type
-> ssh panteater@hpc3.rcic.uci.edu
-into your terminal. hpc3.rcic.uci.edu is the URL of the cluster.
-
-The hpc3 people have assembled a useful tutorial on how to use bash and shell scripting
-https://rcic.uci.edu/tutorials.html
-https://swcarpentry.github.io/shell-novice/
-These links are useful to learn and read in their entirety, but you will remember them better if you’re trying to use what you learn for a specific task (such as setting up and running a protein simulation) while you’re doing them. When I first started my graduate research, I found a bash tutorial and worked on just that for a week straight until I knew the ins and outs of how to use a cluster.
 2.2 Setup ssh Keys
 Life is too short to use two factor authentication every time you log into the cluster. Setup ssh keys so you don't have to use two factor authentication for logging into the cluster. hpc3 has an explanation of how this works
 https://rcic.uci.edu/hpc3/ssh-guide.html
@@ -354,5 +322,3 @@ Link to group meeting directions
 https://docs.google.com/document/d/1AGdWI6pEpkVlZ0vJh8WUR1ay7AzAAS7NqA18qJkE0q8/edit?usp=sharing
 
 
-1.2 Notation
-Code and syntax will appear throughout this tutorial using the Courier New font. Commands you should type into the command prompt will begin with “> ”; don’t type that part. If you see panteater, replace that with your username.
