@@ -9,23 +9,13 @@ See the procedures for joining the group in
 The first step to joining a computational lab is learning how to use linux  
 [Cluster.md](Cluster.md)
 
-Here is a list of some of the most relevant papers for the group
+Here is a list of some of the most relevant papers for the group  
 [Literature.md](Literature.md)
 
-3 Using CHARMM for Molecular Dynamics
-The first step to learning to run multisite λ dynamics (MSλD) is to learn to run normal molecular dynamics (MD). For this exercise, we’ll set up T4 lysozyme with the mutations described in
-Hayes, R. L.; Vilseck, J. Z. & Brooks III, C. L.
-Approaching Protein Design with Multisite λ Dynamics: Accurate and Scalable Mutational Folding Free Energies in T4 Lysozyme
-Protein Science, 2018, 27, 1910-1922
-which can be accessed at https://doi.org/10.1002/pro.3500 . Read this paper to get a feel for the methods the group uses and the system to which they are applied. In the upcoming sections we’ll evaluate the free energy for the four systems that did not require VB-REX sampling for converged free energy estimates, i.e. focus on L99, M106, V149, and F153, and ignore A42, A98, and M102. In this section though, the goal is simply to set up the simulation boxes, solvate them, and run molecular dynamics. You’ll be setting up the full folded protein, as well as the 4 different pentapeptides mimicking the unfolded ensemble for each site.
+Here is a tutorial on how to use CHARMM to run mutations in T4 Lysozyme  
+[Tutorial.md](Tutorial.md)
 
-WORKING HERE: Other MD references:
-"BLaDE paper"
-Gromacs manual, first few chapters
-3.1 System Setup
-CHARMM-GUI is the easiest way to set up systems. You upload a pdb file from the pdb or one that you have edited, and it will solvate it for you, adding water and ions. As time goes on, you will learn to setup the system yourself, using other tools like mmtsb, and using propka to determine the ionization state of titratable residues in your protein.
-
-The first thing you’ll need to do is sign up for an account on CHARMM-GUI. Use your UCI email to do so. Once you have an account, you can click on the “Input Generator” link in the grey “CHARMM-GUI” box on the left. On the next page you’ll click on the “Solution Builder” link in the grey “Input Generator” box on the left. Enter the PDB code next to the box that says “Download PDB File:” – you should find the four character PDB code for T4 lysozyme in the manuscript. Then click the “Next Step: Select Model/Chain” in the lower right corner.
+WORKING AND MOVING
 
 Check the boxes for the solution components you want to include. In this case you should include the protein chain “PROA”. For the folded ensemble simulation, include all residues 1-162. For the unfolded ensemble simulations, just choose the five residues from two residues before the mutating residue to two residues after. You do not need to include the BME or CL atoms. Whether you choose to include these other atoms in a PDB in the future depends on your system and whether you expect them to be important. It is often good practice to include the crystallographic waters by checking the final box for WATA, because these waters can relax slowly, so it may take a long time for water that you add in the later steps to get into all the pockets it normally occupies in equilibrium. You do not need them for the unfolded ensemble. Once you have selected these two components, click on “Next Step: Manipulate PDB” in the bottom right.
 
