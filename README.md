@@ -9,18 +9,9 @@ See the procedures for joining the group in
 The first step to joining a computational lab is learning how to use linux  
 [Cluster.md](Cluster.md)
 
-2 Using bash and linux to Access the Cluster
-2.2 Setup ssh Keys
-Life is too short to use two factor authentication every time you log into the cluster. Setup ssh keys so you don't have to use two factor authentication for logging into the cluster. hpc3 has an explanation of how this works
-https://rcic.uci.edu/hpc3/ssh-guide.html
-as well as a link to a tutorial for Windows. See below for Mac.
- 
-For Mac: run
-> ssh-keygen
-on your local machine and enter a passphrase. Use the default file locations. This will generate ~/.ssh/id_rsa (the private key) and ~/.ssh/id_rsa.pub (the public key) on your local machine. ~/.ssh is a hidden directory inside your home directory. (Directories starting with . are hidden.)
-Copy ~/.ssh/id_rsa.pub into the end of a file called ~/.ssh/authorized_keys on hpc3. For example, if the file doesn’t exist yet, you can just run
-> scp ~/.ssh/id_rsa.pub panteater@hpc3.rcic.uci.edu:~/.ssh/authorized_keys
-but if the file already has authorized keys in it this will overwrite them, and you need to do something more careful using what you learned in the bash and linux tutorial.
+Here is a list of some of the most relevant papers for the group
+[Literature.md](Literature.md)
+
 3 Using CHARMM for Molecular Dynamics
 The first step to learning to run multisite λ dynamics (MSλD) is to learn to run normal molecular dynamics (MD). For this exercise, we’ll set up T4 lysozyme with the mutations described in
 Hayes, R. L.; Vilseck, J. Z. & Brooks III, C. L.
@@ -299,26 +290,15 @@ Gordon Research Conference on Protein Folding and Dynamics - There are many Gord
 
 Free Energy Meeting - This conference occurs every other year and is focussed on computing free energies more accurately for big pharma applications in industry. Consequently, about half of the attendees are from industry. It’s capped around 200. On the off years they are trying to organize a similar conference in Europe.
 
-6.2 Publications Worth Reading
-Hayes, R. L. et al. Approaching Protein Design with Multisite λ Dynamics: Accurate and Scalable Mutational Folding Free Energies in T4 Lysozyme. Protein Science, 2018, 27, 1910-1922
-https://onlinelibrary.wiley.com/doi/10.1002/pro.3500
-This paper is what the T4 lysozyme practice problem is based on. It is the proof of concept paper that began using λ dynamics for protein mutations.
-
-Hayes, R. L. et al. Adaptive Landscape Flattening Accelerates Sampling of Alchemical Space in Multisite λ Dynamics. Journal of Physical Chemistry B, 2017, 121, 3626-3635
-https://pubs.acs.org/doi/10.1021/acs.jpcb.6b09656
-The ALF algorithm has changed somewhat since this paper was written, but this still gives a good overview of how it works. Every λ dynamics simulation we run starts with ALF, so understanding it is pretty important.
-
-Kong, X. and Brooks, C. L. III. λ‐dynamics: A new approach to free energy calculations. Journal of Chemical Physics, 1996, 105, 2414–2423
-https://doi.org/10.1063/1.472109
-The original λ dynamics paper. A lot has changed, but it’s worth a read.
-
-WORKING HERE:
-Add 2009 review
-https://onlinelibrary.wiley.com/doi/10.1002/jcc.21295
-And maybe MSLD paper? Also implicit constraints, and RNase H paper.
-
 6.3 Homeless
 Link to group meeting directions
 https://docs.google.com/document/d/1AGdWI6pEpkVlZ0vJh8WUR1ay7AzAAS7NqA18qJkE0q8/edit?usp=sharing
 
 
+See also
+
+Mobley group orientation  
+[https://github.com/MobleyLab/Training/blob/main/NewMembers/README.md](https://github.com/MobleyLab/Training/blob/main/NewMembers/README.md)
+
+Hayes group website  
+[https://faculty.sites.uci.edu/rhayes1/](https://faculty.sites.uci.edu/rhayes1/)
