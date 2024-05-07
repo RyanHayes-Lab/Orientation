@@ -21,3 +21,21 @@ Mobley group orientation
 
 Hayes group website  
 [https://faculty.sites.uci.edu/rhayes1/](https://faculty.sites.uci.edu/rhayes1/)
+
+## Other homeless garbage
+
+WORKING HERE
+
+Please join the new SCBC Google Group, which we will use from now on to announce SCBC events. 
+
+To join: 
+
+- while logged in to Google with your UCI account, go to groups.google.com
+
+- in the left pane, choose “all groups”
+
+- search for “scbc” using the search function at the top
+
+- click on “–>]” to join
+
+Please contact me at dsoenen@uci.edu if you have any problems.
