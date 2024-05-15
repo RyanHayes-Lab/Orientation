@@ -52,42 +52,44 @@ Then you'll want to run it on your protein. These two lines should let you do th
 `/data/homezvol0/rhayes1/programs/propka/bin/propka3 yourpdbhere.pdb`
 
 Comment on adding to  
-`IMAGE BYRESID XCEN @xcen YCEN @ycen ZCEN @zcen sele resname TIP3 end
-IMAGE BYRESID XCEN @xcen YCEN @ycen ZCEN @zcen sele segid IONS end`
+`IMAGE BYRESID XCEN @xcen YCEN @ycen ZCEN @zcen sele resname TIP3 end`
+`IMAGE BYRESID XCEN @xcen YCEN @ycen ZCEN @zcen sele segid IONS end`
 
 WORKING HERE
 
 Once you’ve set up the system using CHARMM-GUI, you’ll need to relax the water for a while at constant volume using the provided script step4_equilibration.inp, and then relax the volume for a while longer at constant pressure using the provided script step5_production.inp. These scripts use standard CHARMM routines to run dynamics and are very slow, so modify these scripts to use BLaDE on GPUs as follows. Add the line  
 `scalar fbeta set 0.1 sele all end`  
 to set the friction coefficient fbeta immediately before dynamics in both files, and change the dynamics command in step4_equilibration.inp to  
-`DYNA leap start timestep 0.001 nstep @nstep -
-        blade -
-        nprint 1000 iprfrq 1000 ntrfrq 0 -
-        iunread -1 iunwri 12 iuncrd -1 iunvel -1 kunit -1 -
-        nsavc 0 nsavv 0 -
-        tref @temp firstt @temp`  
+`DYNA leap start timestep 0.001 nstep @nstep -`
+`        blade -`
+`        nprint 1000 iprfrq 1000 ntrfrq 0 -`
+`        iunread -1 iunwri 12 iuncrd -1 iunvel -1 kunit -1 -`
+`        nsavc 0 nsavv 0 -`
+`        tref @temp firstt @temp`  
 and change the dynamics command in step5_production.inp to  
-`DYNA CPT leap restart time 0.002 nstep @nstep -
-        blade prmc iprs 100 pref 1 prdv 100 -
-        nprint 1000 iprfrq 1000 ntrfrq 0 -
-        iunread 11 iunwri 12 iuncrd 13 iunvel -1 kunit -1 -
-        nsavc 50000 nsavv 0 -
-        reft @temp firstt @temp`
+`DYNA CPT leap restart time 0.002 nstep @nstep -`
+`        blade prmc iprs 100 pref 1 prdv 100 -`
+`        nprint 1000 iprfrq 1000 ntrfrq 0 -`
+`        iunread 11 iunwri 12 iuncrd 13 iunvel -1 kunit -1 -`
+`        nsavc 50000 nsavv 0 -`
+`        reft @temp firstt @temp`
 
 WORKING HERE: moving this section 3.1 to after 3.2 and 3.3 probably makes more sense.
-3.2 CHARMM Scripts
+
+## 1.2 CHARMM Scripts
+
 A molecular dynamics engine is a suite of software that performs molecular dynamics simulations. There are many molecular dynamics engines, including CHARMM, OpenMM, Gromacs, AMBER, LAMMPS, BLaDE, and many more. Our lab primarily focuses on CHARMM because MSλD was originally developed in the CHARMM engine. Among these engines, CHARMM is one of the oldest, and has been in development since the 1970s. It is primarily written in FORTRAN. It takes fewer shortcuts than other simulation packages which means it is typically more accurate and slower. It has many more features than most packages and is probably only second to OpenMM in terms of flexibility in what it can do. It is also quite flexible in how calculations are setup, because it has a builtin scripting language that allows different pieces of a calculation to be linked together. (Most other MD engines have many programs whose output must be linked together by an outside program such as a bash or python script.) While this scripting language is very expressive, it is also a little clunky, requiring goto statements to run for loops, and requiring arrays to be defined as a bunch of scalar variables with similar names.
 
-You can learn more about the CHARMM scripting language in the documentation below in section 3.5, but it is also worth noting a few of the most important commands and ideas here. It is also worth noting that the way CHARMM-GUI works is by using your input to create CHARMM scripts that are then executed on the remote server to setup your system.
+You can learn more about the CHARMM scripting language in the documentation below in section 1.5, but it is also worth noting a few of the most important commands and ideas here. It is also worth noting that the way CHARMM-GUI works is by using your input to create CHARMM scripts that are then executed on the remote server to setup your system.
 
 Most CHARMM files start with a title. The title looks like this
-* This is a generic title, it starts with an asterisk
-* Titles can be multiple lines.
-* Titles are different from comments
-* Comments are marked with exclamation points
-* Everything after an exclamation point is ignored by CHARMM
-* A title is over when you come to a line with just an asterisk
-*
+`* This is a generic title, it starts with an asterisk`
+`* Titles can be multiple lines.`
+`* Titles are different from comments`
+`* Comments are marked with exclamation points`
+`* Everything after an exclamation point is ignored by CHARMM`
+`* A title is over when you come to a line with just an asterisk`
+`*`
 Side note: CHARMM titles make vi , my preferred linux text editor, do weird things. You can stop this behavior by adding the line
 set nofoldenable
 into the file ~/.vimrc , where ~ is bash shorthand for your home directory. Either create or add to this file.
