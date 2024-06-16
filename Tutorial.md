@@ -151,6 +151,10 @@ to your slurm script. To use the gpu partition, you will need to add a different
 `#SBATCH -A rhayes1_lab_gpu`  
 to your slurm script. If slurm gives you a QOS error, you may need to remind me to add you to the lab accounts. I typically use the free partitions. Especially while you’re learning it’s probably best to use the paid partition so you don’t have to second guess whether your script had an error or whether another job killed it. As you become more comfortable and start using more GPUs, discuss with Dr. Hayes or more senior lab members before you launch thousands of GPU-hours of paid jobs. Eventually you’ll get a feel for how much our lab can afford, and how much free computing vs. wasted time is worth.
 
+There are many other sbatch options you can look up.  
+`#SBATCH --mem=0`  
+is an important one. Our jobs typically run on one GPU and one CPU, but sometimes require more RAM than is allocated to one CPU. You can request more, (30 Gb is usually enough) with `--mem=30G`, or if you really want to be safe, you can request all the RAM on a node with `--mem=0`, but this should be avoided because then no one else on the cluster can use the node.
+
 You can keep an eye on your jobs with the `squeue` command. To see all your jobs run  
 `squeue -u panteater`  
 (Remember to use your username). If one of your jobs is 2718281, you can get a bunch more information about it with  
