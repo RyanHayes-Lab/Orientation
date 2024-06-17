@@ -83,15 +83,15 @@ There are two ways to request slurm to give you a compute node: either by submit
 
 An interactive job allows you to log into a compute node and execute commands there rather than on the login node. The two nodes share the same file system, so everything you do there will show up back on the login node. To start an interactive job you can type  
 `srun --pty /bin/bash -i`  
-There will be a delay until the job starts, and then you can continue entering commands. All new commands will run on the compute node until you type `exit`. Before you type `exit` try typing `bash HelloWorld.sh` to run the hello world script. The primary use of interactive jobs is for debugging or trying out new ideas, when you are running heavy calculations, possibly with a GPU, but don't in advance all the commands you wish to execute.
+There will be a delay until the job starts, and then you can continue entering commands. All new commands will run on the compute node until you type `exit`. Before you type `exit` try typing `bash HelloWorld.sh` to run the hello world script. The primary use of interactive jobs is for debugging or trying out new ideas, when you are running heavy calculations, possibly with a GPU, but don't know in advance all the commands you wish to execute.
 
-Alternatively, submit a bash script to run on a compute node with the `sbatch` command. The slurm script will run on the compute node and then exit. You can submit `HelloWorld.sh` as a slurm script by typing  
+Alternatively, you can submit a bash script to run on a compute node with the `sbatch` command. The slurm script will run on the compute node and then exit. You can submit `HelloWorld.sh` as a slurm script by typing  
 `sbatch HelloWorld.sh`  
-Your output will appear by default in a file called `slurm-*.out` where `*` was the slurm job id. `sbatch` and slurm scripts are used when you know exactly what you want to do, and can write a script to do it. You can submit as many jobs to the queue as you wish, and many of them can run on different compute nodes at the same time.
+Your output will appear by default in a file called `slurm-*.out` where `*` was the slurm job id. `sbatch` and slurm scripts are used when you know exactly what you want to do and can write a script to do it. You can submit as many jobs to the queue as you wish, and many of them can run on different compute nodes at the same time.
 
 Not all jobs are created equal. Some are fast and some are slow, some require GPUs and some do not, some are urgent and others are not. Slurm applies default options to every job, which may or may not be what you need, so in most cases you should tell slurm about your job using options so it gives you only what you need, and leaves remaining resources available for other users. For some set of options `--option1=value1 --option2=value2`, you can give the options to an interactive job as  
 `srun --option1=value1 --option2=value2 --pty /bin/bash -i`  
-and you can give them to sbatch as  
+and you can give them to sbatch either as  
 `sbatch --option1=value1 --option2=value2 HelloWorld.sh`  
 or by placing them immediately after the shebang line (`#! /bin/bash`) in the script  
 `#! /bin/bash`  
@@ -100,24 +100,24 @@ or by placing them immediately after the shebang line (`#! /bin/bash`) in the sc
 `echo "hello world from"`
 `hostname`
 
-There are many slurm options, and most have a long form and a short form. The long form is two dashes followed by a word followed by an equal sign followed by a value. The short form is one dash followed by a letter followed by a space followed by a value. These are some of the most important options:
+There are many slurm options, and most have a long form and a short form. The long form is two dashes followed by a word followed by an equal sign followed by a value (`--partition=free-gpu`). The short form is one dash followed by a letter followed by a space followed by a value (-p free-gpu`). These are some of the most important options:
 
 `-p`  
-The `-p` option controls what partition you run on. The main partitions are `standard` and `free` for CPU jobs and `gpu` and `free-gpu` for GPU jobs. The default option is `standard`. Thus to run the job on the `free-gpu` partition, you would use `-p free-gpu` as the option. Each partition is like a separate queue, so you can have jobs waiting in each of them. The free variants `free` and `free-gpu` cost the lab nothing to run, but if a job is submitted to the paid queue and the free queue job is in its way, the free job will be killed, and your slurm-*.out file will have a message about the job being preempted. The scheduler chooses which job to kill by whichever job has been running for the shortest time for avoid killing jobs that are almost finished. The paid queues cost the lab $0.01 per CPU hour and $0.32 per GPU hour. You can see how much computing time the lab has remaining per six month period with the `sbank` command:
+The `-p` option controls what partition you run on. The main partitions are `standard` and `free` for CPU jobs and `gpu` and `free-gpu` for GPU jobs. The default option is `standard`. Thus to run the job on the `free-gpu` partition, you would use `-p free-gpu` as the option. Each partition is like a separate queue, so you can have jobs waiting in each of them. The free variants `free` and `free-gpu` cost the lab nothing to run, but if a job is submitted to the paid queue and the free queue job is in its way, the free job will be killed, and your `slurm-*.out` file will have a message about the job being preempted. The scheduler chooses which job to kill by whichever job has been running for the shortest time for avoid killing jobs that are almost finished. The paid queues cost the lab $0.01 per CPU hour and $0.32 per GPU hour. You can see how much computing time the lab has remaining per six month period with the `sbank` command:  
 `/pub/hpc3/sbank_test/sbank balance statement -a rhayes1_lab_gpu`  
-If you run out of time, I can reallocate time between lab members. For deciding between the paid and free queues, you should try to use most of your whole balance within each six month period, but you should keep a little in the paid queue for running debugging jobs so you don't have to wait for as long. When you are first starting out, you should run things in the paid queue until you get comfortable with the cluster.
+If you run out of time, I can reallocate time between lab members. For deciding between the paid and free queues, you should try to use most of your balance within each six month period, but you should keep a little in the paid queue for running debugging jobs so you don't have to wait for as long. When you are first starting out, you should run things in the paid queue until you get comfortable with the cluster.
 
-`-A`
-The `-A` or `--account` option controls the account a job is charged against. If you are using the `free` or `free-gpu` partitions, you do not need to specify an account, and might get an error if you do, but to run on the `standard` partition, you will need to specify the `rhayes1_lab` account, and to run on the `free-gpu` partition, you will need to specify the `rhayes1_lab_gpu` account, e.g. `-A rhayes1_lab_gpu`. You also have personal accounts you can charge for small jobs, and these personal accounts are the default values, so be sure to specify a lab account if you use a paid queue. Everything on hpc3 is paid in advance, so you don't need to worry about accidentally charging your personal accounts. The worst that can happen is you run out of time.
+`-A`  
+The `-A` or `--account` option controls the account a job is charged against. If you are using the `free` or `free-gpu` partitions, you do not need to specify an account, and might get an error if you do. To run on the `standard` partition, you will need to specify the `rhayes1_lab` account, and to run on the `free-gpu` partition, you will need to specify the `rhayes1_lab_gpu` account, e.g. `-A rhayes1_lab_gpu`. You also have personal accounts you can charge for small jobs, and these personal accounts are the default values, so be sure to specify a lab account if you use a paid queue. Everything on hpc3 is paid in advance, so you don't need to worry about accidentally charging your personal accounts. The worst that can happen is you run out of time.
 
 `--time`  
 This sets the maximum length of a job so slurm knows when it can schedule the next job. If a single number is given, the time limit is in minutes, e.g. `--time=1440` requests a full day for the job to run. We will only be billed for as much time as the job uses, so if the job finishes after an hour, we don't have to pay for the full day.
 
 `--gres`  
-This requests a generalized resource, and is the mechanism for requesting a GPU. Even if you run on the `gpu` or `free-gpu` partitions, you will not receive a GPU unless you request one. To request one GPU (per node), use `--gres=gpu:1`. There are three types of GPUs available on the cluster: A30, A100, and V100. You can request an A30 `--gres=gpu:A30:1`. Since different GPUs run different speeds it can be important to request a paticular type of GPU if you're running benchmarks to see how long a program takes.
+This requests a generalized resource, and is the mechanism for requesting a GPU. Even if you run on the `gpu` or `free-gpu` partitions, you will not receive a GPU unless you request one. To request one GPU (per node), use `--gres=gpu:1`. There are three types of GPUs available on the cluster: A30, A100, and V100. You can request an A30 using `--gres=gpu:A30:1`. Since different GPUs run different speeds, it can be important to request a paticular type of GPU if you're running benchmarks to see how long a program takes.
 
 `--mem`  
-This controls how much RAM a job requests. Our jobs typically run on one GPU and one CPU, but sometimes require more RAM than the 3 Gb allocated to one CPU. You can request more, (30 Gb is usually enough) with `--mem=30G`, or if you really want to be safe, you can request all the RAM on a node with `--mem=0`, but this should be avoided because then no one else on the cluster can use the rest of the node.
+This controls how much RAM a job requests. Our jobs typically run on one GPU and one CPU, but sometimes require more RAM than the 3 Gb allocated to one CPU. CHARMM-GUI jobs and postprocessing on long productions simulations are examples that reuire more memory. Typically, you should not request more memory unless your job gets killed with an OOM (out of memory) error message in your `slurm-*.out` file. You can request more, (30 Gb is usually enough) with `--mem=30G`, or if you really want to be safe, you can request all the RAM on a node with `--mem=0`, but this should be avoided because then no one else on the cluster can use the rest of the node.
 
 Other default options  
 `--ntasks=1`  
@@ -127,8 +127,8 @@ Other default options
 
 Other options to look up  
 `--job-name` Give the job a different name so it's easier to find when looking at the queue  
-`--output` Write the log file somewhere other than `slurm-*.out`
-`--error` Write the error file somewhere other than `slurm-*.out`
+`--output` Write the log file somewhere other than `slurm-*.out`  
+`--error` Write the error file somewhere other than `slurm-*.out`  
 `--dependency` Make a job wait for another job
 
 You can keep an eye on your jobs with the `squeue` command. To see all your jobs run  
