@@ -28,9 +28,11 @@ Hayes group website
 Please join the Synthetic and Chemical Biology Club (SCBC) Google Group. The club host a 1 hour seminar once a month with two trainee speakers, and the meetings are announced through the google group.
 [https://sites.uci.edu/scbc/](https://sites.uci.edu/scbc/)
 
-To join: 
+To join:
+
 - while logged in to Google with your UCI account, go to groups.google.com
 - in the left pane, choose “all groups”
 - search for “scbc” using the search function at the top
 - click on “–>]” to join
+
 Please contact [dsoenen@uci.edu](dsoenen@uci.edu) if you have any problems.

@@ -115,13 +115,13 @@ if, goto, etc. Also pdb, crd, par, rtf, psf WORKING HERE
 
 CHARMM can be run with a command following the format  
 `charmmexecutable -i script`  
-where charmmexecutable is the path to the CHARMM executable, and script is a file containing a CHARMM script. If you put the following hello world CHARMM script (hello world is a term from computer science for a program that just prints output to let you know it’s working)  
+where `charmmexecutable` is the path to the CHARMM executable, and `script` is a file containing a CHARMM script. If you put the following hello world CHARMM script (hello world is a term from computer science for a program that just prints output to let you know it’s working)  
 `* This is a title`  
 `*`  
 `echo "Hello World"`  
 `stop`  
 in a file named `helloworld.inp`, then you can run it using  
-`charmmexecutable -i helloworld.inp`
+`/dfs8/rhayes1_lab/bin/CHARMM_EXE/gnu/charmm -i helloworld.inp`
 
 You should never run CHARMM (or do much of anything else that takes longer than a minute) from the login nodes (sometimes also called head nodes). When you first log into the cluster with `ssh`, the login node is the computer that runs all your commands. You don’t want the login nodes to be busy, otherwise routine tasks like logging in or making a directory or copying a file take forever for everyone using that login node. Therefore, clusters have many other computers (called compute nodes) to perform calculations. To use a compute node you have to request it, and then wait in line. The line is called a queue (which is what lines are called in Great Britain). Thus you should submit computationally demanding tasks to the queue. Our job scheduler is called slurm, and the hpc3 documentation has good information on how to use it:  
 [https://rcic.uci.edu/slurm/slurm.html](https://rcic.uci.edu/slurm/slurm.html)

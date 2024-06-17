@@ -2,7 +2,7 @@
 
 ## Cluster Access
 
-Have Dr. Hayes email rcic-support@uci.edu to have you added to the rhayes1_lab_share group and the rhayes1_lab account.
+Have Dr. Hayes email [rcic-support@uci.edu](rcic-support@uci.edu) to have you added to the rhayes1_lab_share group and the rhayes1_lab account.
 
 ## Slack Access
 
