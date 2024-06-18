@@ -34,7 +34,7 @@ Check the boxes for the solution components you want to include. In this case yo
 
 This page allows you to make all sorts of modifications to the PDB file. "Terminal Group Patching:" controls what the N and C termini of your protein look like. In solution, the N terminal generally ends with an -NH3+ group, and the C terminal group generally ends with a -COO– group. These termini have the names NTER and CTER that you can select from the dropdown boxes. For the unfolded pentapeptide, the peptide is cut out of a longer protein, and the termini would not have these charged ends, but would be neutral and continue on to the next residue, so unless the mutating peptide is on one end or the other of the protein, I generally end it with a neutral capping group. The capping groups are ACE and CT3 in the drop down menus.
 
-You won’t need to select anything in the "Mutation:" row, this is used if the native sequence you want to make mutations to is different from the sequence in the PDB. You’ll be adding your mutations on top of the native sequence later in this tutorial.
+You won’t need to select anything in the "Mutation:" row, this is used if the native sequence you want to make mutations to is different from the sequence in the PDB. You’ll be adding your mutations on top of the native sequence later in this tutorial. This row is also used to select the protonation state of histidines: on the delta nitrogen (HSD), on the epsilon nitrogen (HSE), or on both nitrogens (HSP). All histidines have the default protonation of HSD in this protein, so no modification... WORKING HERE
 
 The "Protonation:" row is fairly important. On this row you set the protonation state of various titratable residues in your protein (and possibly in your ligands).
 
@@ -120,44 +120,14 @@ where `charmmexecutable` is the path to the CHARMM executable, and `script` is a
 in a file named `helloworld.inp`, then you can run it using  
 `/dfs8/rhayes1_lab/bin/CHARMM_EXE/gnu/charmm -i helloworld.inp`
 
-You should never run CHARMM (or do much of anything else that takes longer than a minute) from the login nodes (sometimes also called head nodes). When you first log into the cluster with `ssh`, the login node is the computer that runs all your commands. You don’t want the login nodes to be busy, otherwise routine tasks like logging in or making a directory or copying a file take forever for everyone using that login node. Therefore, clusters have many other computers (called compute nodes) to perform calculations. To use a compute node you have to request it, and then wait in line. The line is called a queue (which is what lines are called in Great Britain). Thus you should submit computationally demanding tasks to the queue. Our job scheduler is called slurm, and the hpc3 documentation has good information on how to use it:  
-[https://rcic.uci.edu/slurm/slurm.html](https://rcic.uci.edu/slurm/slurm.html)
-
-The quick summary is that there are two ways to request slurm to give you a compute node: by submitting a slurm script with `sbatch` or interactively.
-
-A slurm script is a bash script that will run on the compute node and then exit. In the header of the slurm script you can describe details about what your job will need to run with `#SBATCH` entries, or you can supply those same options to `sbatch`. For example if you save the following file to `HelloWorld.sh`  
+Remember, you should never run CHARMM from the login nodes ([Cluster.md](Cluster.md)). Review the information in [Cluster.md](Cluster.md) and then submit this hello world script to the queue. You may wish to use a slurm script like the following:  
 `#! /bin/bash`  
 `#SBATCH -p free`  
 `#SBATCH --time=240 #Maximum time in minutes that job will take`  
 `#SBATCH --ntasks=1`  
 `/data/homezvol0/rhayes1/CHARMM_EXE/gnu/charmm -i helloworld.inp`  
-and then execute  
-`sbatch HelloWorld.sh`  
-it will submit this job to the queue, and you should see its output show up once it starts running. If the file `HelloWorld.sh` lacked all the `#SBATCH` lines, you could also submit it to the queue with the command  
-`sbatch -p free --time=240 --ntasks=1 HelloWorld.sh`
-
-When you submit a slurm script, it runs and exits. If you want more control over the compute node, you can request an interactive job with the following syntax  
-`srun -p free --time=240 --ntasks=1 --pty /bin/bash -i`  
-and then continue entering commands. All new commands will run on the compute node until you type `exit`
-
-There are several partitions where you can run your job, which are selected with the `-p` option. Some jobs just use CPUs, run those on `standard` or `free`, some jobs require GPUs, run those on `gpu` or `free-gpu`. To request a gpu include a line like  
-`#SBATCH --gres=gpu:1`  
-in your slurm script, which requests one GPU per node. The free version of each partition doesn’t cost the lab anything, but your job can be killed by other jobs in the paid partition, in which case you might need to go back and clean up the mess. The paid partition costs the lab $0.01 per hour for CPUs and $0.32 per hour for GPUs. To use the standard cpu partition, you will need to add an account option  
-`#SBATCH -A rhayes1_lab`  
-to your slurm script. To use the gpu partition, you will need to add a different account option  
-`#SBATCH -A rhayes1_lab_gpu`  
-to your slurm script. If slurm gives you a QOS error, you may need to remind me to add you to the lab accounts. I typically use the free partitions. Especially while you’re learning it’s probably best to use the paid partition so you don’t have to second guess whether your script had an error or whether another job killed it. As you become more comfortable and start using more GPUs, discuss with Dr. Hayes or more senior lab members before you launch thousands of GPU-hours of paid jobs. Eventually you’ll get a feel for how much our lab can afford, and how much free computing vs. wasted time is worth.
-
-There are many other sbatch options you can look up.  
-`#SBATCH --mem=0`  
-is an important one. Our jobs typically run on one GPU and one CPU, but sometimes require more RAM than is allocated to one CPU. You can request more, (30 Gb is usually enough) with `--mem=30G`, or if you really want to be safe, you can request all the RAM on a node with `--mem=0`, but this should be avoided because then no one else on the cluster can use the node.
-
-You can keep an eye on your jobs with the `squeue` command. To see all your jobs run  
-`squeue -u panteater`  
-(Remember to use your username). If one of your jobs is 2718281, you can get a bunch more information about it with  
-`scontrol show jobid=2718281`  
-More help on the slurm job scheduler is available at  
-[https://rcic.uci.edu/slurm/slurm.html](https://rcic.uci.edu/slurm/slurm.html)
+named HelloWorldCHARMM.sh. You may run this slurm script by executing  
+`sbatch HelloWorldCHARMM.sh`  
 
 ## 1.4 CHARMM Engines
 
@@ -285,23 +255,35 @@ Adaptive landscape flattening (ALF) is required to choose optimal biases that al
 
 ## 3.1 Installing ALF
 
-ALF is located at  
-`/share/crsp/lab/rhayes1/share/git/ALF/alf`  
-and will be updated there from time to time. You can check back here for corrections or updates. ALF is also available on github at [https://github.com/ryanleehayes/alf](https://github.com/ryanleehayes/alf), and can be downloaded to the cluster with the command  
+ALF is available online on github at [https://github.com/ryanleehayes/alf](https://github.com/ryanleehayes/alf), and can be downloaded to the cluster with the command  
 `git clone git@github.com:RyanLeeHayes/ALF.git`  
 The `README.md` file in this directory is a useful source of information on how to use the software, and there are several examples inside the examples directory. Put your copy of ALF somewhere in your home or BeeGFS directories. To get ALF ready for use, follow these steps.
 
-1. Within your copy of the directory, `cd` into the `alf/wham` subdirectory. Within this directory, run the `Clean.sh` script. This will get rid of previous compilations of the programs in this subdirectory. If the directory is already clean, it may display error messages saying it cannot remove files. Next you need to setup the environment to compile the code in this directory with the following two lines:  
+1. First you need to setup the environment to compile the code in this directory by running the following two lines:  
 `module load cmake/3.22.1 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
 `export FFTW_HOME=$FFTW_DIR`  
-These are the standard modules you can use to compile most programs on hpc3. You can run these two lines directly from the terminal, or you can save them to a file called `modules`, and then run the command `source modules`. Finally, you can run the `Compile.sh` script.
+These are the standard modules you can use to compile most programs on hpc3. You can run these two lines directly from the terminal, or you can save them to a file called `modules`, and then run the command `source modules`.
 
-2. Going back to your copy of the directory, now `cd` into the `alf/dca` subdirectory. Run `Clean.sh`, load the modules again if you unloaded them, and run `Compile.sh` in this directory too. If you're using the nonlinear ALF code, you'll need to repeat this process in `alf/lmalf` as well.
+2. Within your copy of the directory, `cd` into the `alf/wham` subdirectory. Within this directory, run the `Clean.sh` script. This will get rid of previous compilations of the programs in this subdirectory. If the directory is already clean, it may display error messages saying it cannot remove files. Finally, you can run the `Compile.sh` script.
 
-3. Go back to the copy of the directory. You are now ready to install ALF with python. You will probably need to load a nice copy of python first, so you can create a virtual environment from it, and install ALF as a module into that python virtual environment. You can load a good copy of python with  
+3. Going back to your copy of the directory, now `cd` into the `alf/dca` subdirectory. Run `Clean.sh` and `Compile.sh` in this directory too. If you're using the nonlinear ALF code, you'll need to repeat this process in `alf/lmalf` as well.
+
+4. Go back to the copy of the directory. You are now ready to install ALF with python. You will probably need to load a nice copy of python first, so you can create a virtual environment from it, and install ALF as a module into that python virtual environment. You can load a good copy of python with  
 `module load anaconda/2022.05`  
-Next, run `Setup.sh`. This will create a virtual environment, and then install ALF into it with pip. If anything goes wrong, or you need to change something and install again, you can delete this installation by removing the `alf.egg-info` and `env-alf` subdirectories and the `setupenv` files.
+Next, run `Setup.sh`. This will create a virtual environment, and then install ALF into it with pip. If anything goes wrong, or you need to change something and install again, you can delete this installation by removing the `alf.egg-info` and `env-alf` subdirectories and the `setupenv` files. Finally run  
+`module rm anaconda/2022.05`  
+to remove this version of python from your path, as it interferes with MPI applications.
 
 ALF is now installed as a python module inside a python virtual environment. You can load this python virtual environment at any time by sourcing the file `setupenv` that `Setup.sh` created in this directory, or you can directly copy the line contained in the file and put it into your scripts. To use ALF within a python script, you can include the line `import alf` near the top of the python script.
 
 Examples for how to run ALF are located in the `examples` directory of your ALF directory.
+
+## 3.2 ALF Best Practices
+
+Inside the `examples` directory is the `engines` directory, which has example ALF scripts for several platforms. `bladelib` is the fastest of these that runs inside CHARMM, so we will use it. There are three main alf subroutines: `runflat`, `runprod`, and `postprocess`. You should read their documentation (see the alf `README.md`, and the beginning of `alf/runflat.py`, `alf/runprod.py`, and `alf/postprocess.py`). Inside the `examples` directory, these subroutines are housed inside slurm scripts `runflat.sh`, `runprod.sh`, and `postprocess.sh`, which are submitted to slurm by `subsetAll.sh`.
+
+The `runflat` subroutine is used to run several short simulations to optimize the biases, from it's first argument to its second argument, using the third argument as the number of equilibration time steps and the fourth argument as the number of sampling time steps. Previous numerical experiments suggested discarding the first quarter of the data provides optimal sampling, so the fourth argument should be three times the third. Typically 100 or 200 short simulations of 100 ps (25 ps equilibration and 75 ps sampling) are run to get a rough idea of the biases. 100 cycles is sufficient in most cases, but if you're mutating to or from an arginine, you'll need the full 200 cycles. Next `runflat` is run again, this time with about 10 cycles of longer 1 ns simulations to refine the biases. `runflat` is quite fault tolerant. If an error is encountered during a cycle, `runflat` will keep going back and trying it again until it succeeds. If `runflat` crashes and is launched again, it checks to see how far it got the previous time, and begins at the first incomplete cycle.
+
+The `runprod` subroutine runs some portion of a production simulation. Typically these are launched in groups of 5 by another script. Each individual in the group is launched as a slurm job array with a slurm option like `--array=1-4%1`, which in this case would run four copies of the job, one at a time. WORKING HERE this isn't very clear.
+
+ALF Best practices...

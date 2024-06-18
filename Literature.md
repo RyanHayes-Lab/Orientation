@@ -34,7 +34,7 @@ The original λ dynamics paper. A lot has changed, but it’s worth a read.
 Knight, J. L. & Brooks III, C. L.
 λ-Dynamics Free Energy Simulation Methods 
 Journal of Computational Chemistry, 2009, 30, 1692-1700  
-[https://onlinelibrary.wiley.com/doi/10.1002/jcc.21295](https://onlinelibrary.wiley.com/doi/10.1002/jcc.21295)
+[https://onlinelibrary.wiley.com/doi/10.1002/jcc.21295](https://onlinelibrary.wiley.com/doi/10.1002/jcc.21295)  
 A good review of how λ dynamics worked in 2009. A lot has changed, but it gives a good overview of the concepts.
 
 <!-- R515 -->
