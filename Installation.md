@@ -32,7 +32,7 @@ If you wish to install pyCHARMM instead, (a python interface to CHARMM), you may
 `module load cmake/3.22.1 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
 `export FFTW_HOME=$FFTW_DIR`  
 `mkdir pycharmm`  
-`cd gnu`  
+`cd pycharmm`  
 `../dev-release/configure --without-openmm --with-blade --without-mpi --as-library -p inst`  
 `make -j 10 install`  
 `cd ../`  
@@ -41,9 +41,11 @@ If you wish to install pyCHARMM instead, (a python interface to CHARMM), you may
 `source env-pycharmm/bin/activate`  
 `pip install -e dev-release/tool/pycharmm`  
 `` DIR=`pwd` ``  
-`echo "export CHARMM_LIB_DIR=$DIR/gnu/inst/lib" > setupenv`  
+`echo "export CHARMM_LIB_DIR=$DIR/pycharmm/inst/lib" > setupenv`  
 `echo "source $DIR/env-pycharmm/bin/activate" >> setupenv`  
 You should source `$DIR/setupenv` every time you want to use pyCHARMM.
+
+To reinstall CHARMM or pyCHARMM, delete the `gnu` or `pycharmm` directory for CHARMM or pyCHARMM respectively.
 
 ## ALF (Adaptive Landscape Flattening)
 
@@ -96,7 +98,7 @@ but I find this annoying, as this will modify your `~/.bashrc` so that conda is 
 `fi`  
 `unset __conda_setup`  
 `# <<< conda initialize <<<`  
-``  
+` `  
 `# conda deactivate # after conda inserted code`  
 `conda deactivate`  
 which contains the modifications to `~/.bashrc` that `conda init` makes (you should change the miniconda path in this file to match yours), and I source it with  
