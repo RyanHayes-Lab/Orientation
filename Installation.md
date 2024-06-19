@@ -40,6 +40,7 @@ If you wish to install pyCHARMM instead, (a python interface to CHARMM), you may
 `python -m venv env-pycharmm`  
 `source env-pycharmm/bin/activate`  
 `pip install -e dev-release/tool/pycharmm`  
+`module rm anaconda/2022.05`  
 `` DIR=`pwd` ``  
 `echo "export CHARMM_LIB_DIR=$DIR/pycharmm/inst/lib" > setupenv`  
 `echo "source $DIR/env-pycharmm/bin/activate" >> setupenv`  
