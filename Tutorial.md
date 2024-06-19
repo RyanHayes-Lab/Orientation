@@ -255,26 +255,7 @@ Adaptive landscape flattening (ALF) is required to choose optimal biases that al
 
 ## 3.1 Installing ALF
 
-ALF is available online on github at [https://github.com/ryanleehayes/alf](https://github.com/ryanleehayes/alf), and can be downloaded to the cluster with the command  
-`git clone git@github.com:RyanLeeHayes/ALF.git`  
-The `README.md` file in this directory is a useful source of information on how to use the software, and there are several examples inside the examples directory. Put your copy of ALF somewhere in your home or BeeGFS directories. To get ALF ready for use, follow these steps.
-
-1. First you need to setup the environment to compile the code in this directory by running the following two lines:  
-`module load cmake/3.22.1 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
-`export FFTW_HOME=$FFTW_DIR`  
-These are the standard modules you can use to compile most programs on hpc3. You can run these two lines directly from the terminal, or you can save them to a file called `modules`, and then run the command `source modules`.
-
-2. Within your copy of the directory, `cd` into the `alf/wham` subdirectory. Within this directory, run the `Clean.sh` script. This will get rid of previous compilations of the programs in this subdirectory. If the directory is already clean, it may display error messages saying it cannot remove files. Finally, you can run the `Compile.sh` script.
-
-3. Going back to your copy of the directory, now `cd` into the `alf/dca` subdirectory. Run `Clean.sh` and `Compile.sh` in this directory too. If you're using the nonlinear ALF code, you'll need to repeat this process in `alf/lmalf` as well.
-
-4. Go back to the copy of the directory. You are now ready to install ALF with python. You will probably need to load a nice copy of python first, so you can create a virtual environment from it, and install ALF as a module into that python virtual environment. You can load a good copy of python with  
-`module load anaconda/2022.05`  
-Next, run `Setup.sh`. This will create a virtual environment, and then install ALF into it with pip. If anything goes wrong, or you need to change something and install again, you can delete this installation by removing the `alf.egg-info` and `env-alf` subdirectories and the `setupenv` files. Finally run  
-`module rm anaconda/2022.05`  
-to remove this version of python from your path, as it interferes with MPI applications.
-
-ALF is now installed as a python module inside a python virtual environment. You can load this python virtual environment at any time by sourcing the file `setupenv` that `Setup.sh` created in this directory, or you can directly copy the line contained in the file and put it into your scripts. To use ALF within a python script, you can include the line `import alf` near the top of the python script.
+See installation instructions in [Installation.md](Installation.md)
 
 Examples for how to run ALF are located in the `examples` directory of your ALF directory.
 

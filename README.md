@@ -15,6 +15,9 @@ Here is a list of some of the most relevant papers for the group
 Here is a tutorial on how to use CHARMM to run mutations in T4 Lysozyme  
 [Tutorial.md](Tutorial.md)
 
+Instructions on how to install some of the most commonly used software in the lab
+[Installation.md](Installation.md)
+
 Other useful group information, including
 - Conferences to consider attending
 - Other useful links
