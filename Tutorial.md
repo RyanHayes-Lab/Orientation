@@ -64,7 +64,7 @@ You won’t need to select anything in the "Mutation:" row, this is used if the 
 The "Protonation:" row is fairly important. On this row you set the protonation state of various titratable residues in your protein (and possibly in your ligands).
 
 First you need to determine the protonation states you want. Upload your pdb to the cluster. Then run the following commands on it to analyze it with propka:  
-`export PYTHONPATH=/data/homezvol0/rhayes1/programs/propka`  
+`export PYTHONPATH=/dfs8/rhayes1_lab/bin/propka`  
 `/dfs8/rhayes1_lab/bin/propka/bin/propka3 1l63.pdb`  
 This will produce a file named `1l63.pka`. If you scroll down to `SUMMARY OF THIS PREDICTION`, you will see a list of pka predictions:  
 `   ASP  10 A     3.48       3.80`  
