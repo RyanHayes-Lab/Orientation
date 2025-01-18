@@ -21,7 +21,7 @@ To compile CHARMM, you should first launch an interactive job, otherwise you'll 
 `srun --pty --time=0-04:00:00 --ntasks=1 --tasks-per-node=1 --cpus-per-task=8 -p standard -A rhayes1_lab --cpu_bind=none bash`
 
 Next, run the following script from the directory that contains the copy of `dev-release`. The module commands set up the environment, (you can also set this up with conda following instructions at [https://github.com/BrooksResearchGroup-UM/MSLD-Workshop/tree/main/0Install_Tools](https://github.com/BrooksResearchGroup-UM/MSLD-Workshop/tree/main/0Install_Tools)). Then `dev-release/configure` uses cmake to set up the files for installation, and `make` installs them. (The `-j10` option says to use 10 threads while installing, which speeds things up a lot.)  
-`module load cmake/3.22.1 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
+`module load cmake/3.20.5 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
 `export FFTW_HOME=$FFTW_DIR`  
 `mkdir gnu`  
 `cd gnu`  
@@ -29,7 +29,7 @@ Next, run the following script from the directory that contains the copy of `dev
 `make -j10 install VERBOSE=1 &> ../make.log`
 
 If you wish to install pyCHARMM instead, (a python interface to CHARMM), you may do so with  
-`module load cmake/3.22.1 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
+`module load cmake/3.20.5 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
 `export FFTW_HOME=$FFTW_DIR`  
 `mkdir pycharmm`  
 `cd pycharmm`  
@@ -52,12 +52,13 @@ To reinstall CHARMM or pyCHARMM, delete the `gnu` or `pycharmm` directory for CH
 
 ALF is the software used to choose optimal biases for λ dynamics simulations, and thus is a prerequisite to running almost any λ dynamics simulation.
 
-ALF is available online on github at [https://github.com/ryanleehayes/alf](https://github.com/ryanleehayes/alf), and can be downloaded to the cluster with the command
-`git clone git@github.com:RyanLeeHayes/ALF.git`
+ALF is available online on github at [https://github.com/ryanleehayes/alf](https://github.com/ryanleehayes/alf), and can be downloaded to the cluster with the command  
+# `git clone git@github.com:RyanLeeHayes/ALF.git`  
+`git clone https://github.com/RyanLeeHayes/ALF.git`  
 The `README.md` file in this directory is a useful source of information on how to use the software, and there are several examples inside the examples directory. Put your copy of ALF somewhere in your home or BeeGFS directories. To get ALF ready for use, follow these steps.
 
-1. First you need to setup the environment to compile the code in this directory by running the following two lines:
-`module load cmake/3.22.1 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`
+1. First you need to setup the environment to compile the code in this directory by running the following two lines:  
+`module load cmake/3.20.5 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
 `export FFTW_HOME=$FFTW_DIR`
 These are the standard modules you can use to compile most programs on hpc3. You can run these two lines directly from the terminal, or you can save them to a file called `modules`, and then run the command `source modules`.
 
