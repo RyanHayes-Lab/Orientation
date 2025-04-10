@@ -116,7 +116,8 @@ If you have a Mac, you will probably wish to forward graphical user interfaces (
 ## VMD
 
 VMD is a software that lets you visualize molecules and simulations. VMD is slightly better than PyMol for watching trajectories. More information and installation instructions are available at  
-[https://www.ks.uiuc.edu/Research/vmd/](https://www.ks.uiuc.edu/Research/vmd/)
+[https://www.ks.uiuc.edu/Research/vmd/](https://www.ks.uiuc.edu/Research/vmd/)  
+For Mac, the most recent version 1.9.4 should work fine, for Windows, you may need to install 1.9.3 for it to work correctly.
 
 ## PyMol
 

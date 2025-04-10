@@ -1,5 +1,8 @@
 # Using the Cluster
 
+As described below, the most important thing to do upon joining the group is go through the following tutorial  
+[https://swcarpentry.github.io/shell-novice/](https://swcarpentry.github.io/shell-novice/)
+
 ## Introduction
 
 The cluster is a large group of computers on campus that we use to run calculations in the group. You can't do much in the group until you have access to it and have learned how to use it. bash is the primary computer scripting language you'll be using to interact with the cluster. The cluster has a queue system managed by the slurm software that you can use to run your individual calculations. Beyond the documentation provided here, RCIC maintains extensive documentation on how to use the cluster, including an introduction for beginners which you may wish to read:  
@@ -15,10 +18,11 @@ In order to log in to the hpc3 cluster, you can type
 `ssh panteater@hpc3.rcic.uci.edu`  
 into your terminal. Replace `panteater` with your UCI NetID. `hpc3.rcic.uci.edu` is the URL of the cluster.
 
-The hpc3 people have assembled a useful tutorial on how to use bash and shell scripting  
+The hpc3 people have assembled a useful collection of tutorials on how to use bash and shell scripting  
 [https://rcic.uci.edu/guides/tutorials.html](https://rcic.uci.edu/guides/tutorials.html)  
+You may want to try out several of them, but keep in mind that you will remember what you learn better if you are using it to complete a specific task (such as learning bash in order to set up and run a protein simulation). By far the most important tutorial in the previous link is  
 [https://swcarpentry.github.io/shell-novice/](https://swcarpentry.github.io/shell-novice/)  
-These links are useful to learn and read in their entirety, but you will remember them better if you’re trying to use what you learn for a specific task (such as setting up and running a protein simulation) while you’re doing them. When I first started my graduate research, I found a bash tutorial and worked on just that for a week straight until I knew the ins and outs of how to use a cluster. If you don't know how to use bash and linux, going through these tutorials is one of the first things you should do in the lab.
+If you're not familiar with bash and linux, this shell-novice tutorial as one of the first things you do in the group. When I first started my graduate research, I found a bash tutorial and worked on just that for a week straight until I knew the ins and outs of how to use a cluster.
 
 ## Lab Resources
 
@@ -31,7 +35,7 @@ Our group has just 1 Tb of CRSP storage. It is located at
 This space is internet accessible, but is inconvenient to use because there are limits on the number of files in addition to the amount of storage. Use BeeGFS instead for most applications. Our group does store git repositories for various softwares we use in CRSP. They are located in  
 `/share/crsp/lab/rhayes1/share/git`
 
-Our group has 40 Tb of BeeGFS storage. It is located at  
+Our group has 100 Tb of BeeGFS storage. It is located at  
 `/dfs8/rhayes1_lab`  
 You should make a directory here with your username to hold your data.  
 `cd /dfs8/rhayes1_lab`  
@@ -60,12 +64,20 @@ Life is too short to use two factor authentication every time you log into the c
 [https://rcic.uci.edu/account/login.html](https://rcic.uci.edu/account/login.html)  
 as well as a link to a tutorial for Windows. See below for Mac.
 
-For Mac: run  
+For Mac:  
+1. Run  
 `ssh-keygen`  
 on your local machine and enter a passphrase. Use the default file locations. This will generate `~/.ssh/id_rsa` (the private key) and `~/.ssh/id_rsa.pub` (the public key) on your local machine. `~/.ssh` is a hidden directory inside your home directory. (Directories starting with . are hidden.)  
-Copy `~/.ssh/id_rsa.pub` into the end of a file called `~/.ssh/authorized_keys` on hpc3. For example, if the file doesn’t exist yet, you can just run  
+2. Copy `~/.ssh/id_rsa.pub` into the end of a file called `~/.ssh/authorized_keys` on hpc3. For example, if the file doesn’t exist yet, you can just run  
 `scp ~/.ssh/id_rsa.pub panteater@hpc3.rcic.uci.edu:~/.ssh/authorized_keys`  
-but if the file already has authorized keys in it this will overwrite them, and you need to do something more careful using what you learned in the bash and linux tutorial.
+but if the file already has authorized keys in it this will overwrite them, and you need to do something more careful using what you learned in the bash and linux tutorial.  
+3. Add the path to the private key you generated (`~/.ssh/id_rsa`) to the file `~/.ssh/config` on your local machine like this:  
+`Host hpc3.rcic.uci.edu`  
+`    IdentityFile ~/.ssh/id_rsa`  
+You can use the commands
+`echo "Host hpc3.rcic.uci.edu" >> ~/.ssh/config`  
+`echo "    IdentityFile ~/.ssh/id_rsa" >> ~/.ssh/config`  
+to do this.
 
 ## The SLURM Queue System
 
