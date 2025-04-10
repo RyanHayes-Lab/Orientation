@@ -51,6 +51,12 @@ Journal of Chemical Theory and Computation, 2011, 7, 2728-2739
 [https://pubs.acs.org/doi/10.1021/ct200444f](https://pubs.acs.org/doi/10.1021/ct200444f)  
 This is the paper that first introduced multisite λ dynamics, the idea of running λ dynamics with multiple perturbation sites.
 
+WORKING HERE:
+
+https://livecomsjournal.org/index.php/livecoms/article/view/v2i1e18378
+
+## λ Dynamics in Large Sequence Spaces
+
 <!-- R881 -->
 Hayes, R. L.; Nixon, C. F.; Marqusee, S. & Brooks III, C. L.
 Selection Pressures on Evolution of Ribonuclease H Explored with Rigorous Free-Energy-Based Design 
@@ -58,9 +64,12 @@ Proceedings of the National Academy of Sciences of the United States of America,
 [https://www.pnas.org/doi/10.1073/pnas.2312029121](https://www.pnas.org/doi/10.1073/pnas.2312029121)  
 Most recent application of λ dynamics to a large protein sequence space. Also the first prospective study on protein mutations with lambda dynamics.
 
-WORKING HERE:
-
-https://livecomsjournal.org/index.php/livecoms/article/view/v2i1e18378
+<!-- R988 -->
+Hayes, R. L.; Cervantes, L. F.; Abad Santos, J. C.; Samadi, A.; Vilseck, J. Z. & Brooks III, C. L.
+How to Sample Dozens of Substitutions per Site with λ Dynamics
+Journal of Chemical Theory and Computation, 2024, 20, 6098-6110  
+[https://pubs.acs.org/doi/10.1021/acs.jctc.4c00514](https://pubs.acs.org/doi/10.1021/acs.jctc.4c00514)  
+First paper including site saturation mutagenesis, also introduces nonlinear ALF loss function.
 
 ## Other λ Dynamics Papers
 
@@ -79,6 +88,13 @@ Addressing Intersite Coupling Unlocks Large Combinatorial Chemical Spaces for Al
 Journal of Chemical Theory and Computation, 2022, 18, 2114-2123  
 [https://pubs.acs.org/doi/abs/10.1021/acs.jctc.1c00948](https://pubs.acs.org/doi/abs/10.1021/acs.jctc.1c00948)  
 This paper covers how to get good results from λ dynamics with many perturbation sites. ALF that flattens coupling between sites and the Potts model estimator are introduced.
+
+<!-- R878 -->
+Hayes, R. L. & Brooks III, C. L.
+A Strategy for Proline and Glycine Mutations to Proteins with Alchemical Free Energy Calculations
+Journal of Computational Chemistry, 2021, 42, 1088-1094  
+[https://onlinelibrary.wiley.com/doi/10.1002/jcc.26525](https://onlinelibrary.wiley.com/doi/10.1002/jcc.26525)  
+Methodology for allowing proline and glycine mutations.
 
 ## Other Authors Worth Reading
 
