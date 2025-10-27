@@ -10,4 +10,4 @@ Have Dr. Hayes add you to the group slack [https://app.slack.com/client/T05309KH
 
 ## Office Access
 
-Email Yi-San to request office keys (y.chang@uci.edu).
+Fill out the key request form at [https://forms.gle/KMgyW5gvCwbvS7s49](https://forms.gle/KMgyW5gvCwbvS7s49) to request a key from Cherry Chan.
