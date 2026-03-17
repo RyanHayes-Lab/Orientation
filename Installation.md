@@ -53,26 +53,32 @@ To reinstall CHARMM or pyCHARMM, delete the `gnu` or `pycharmm` directory for CH
 ALF is the software used to choose optimal biases for λ dynamics simulations, and thus is a prerequisite to running almost any λ dynamics simulation.
 
 ALF is available online on github at [https://github.com/ryanleehayes/alf](https://github.com/ryanleehayes/alf), and can be downloaded to the cluster with the command  
-# `git clone git@github.com:RyanLeeHayes/ALF.git`  
 `git clone https://github.com/RyanLeeHayes/ALF.git`  
-The `README.md` file in this directory is a useful source of information on how to use the software, and there are several examples inside the examples directory. Put your copy of ALF somewhere in your home or BeeGFS directories. To get ALF ready for use, follow these steps.
+or if you have write permissions to the package at github with  
+`git clone git@github.com:RyanLeeHayes/ALF.git`  
+The `README.md` file in this directory is a useful source of information on how to use the software, and there are several examples inside the examples directory. Put your copy of ALF somewhere in your home or BeeGFS directories. ALF installation instructions are in the file `INSTALL`. To install ALF for use, follow those steps, customized for our cluster here.
 
 1. First you need to setup the environment to compile the code in this directory by running the following two lines:  
 `module load cmake/3.20.5 cuda/11.7.1 gcc/11.2.0 openmpi/4.1.2/gcc.11.2.0 fftw/3.3.10/gcc.11.2.0-openmpi.4.1.2`  
 `export FFTW_HOME=$FFTW_DIR`
 These are the standard modules you can use to compile most programs on hpc3. You can run these two lines directly from the terminal, or you can save them to a file called `modules`, and then run the command `source modules`.
 
-2. Within your copy of the directory, `cd` into the `alf/wham` subdirectory. Within this directory, run the `Clean.sh` script. This will get rid of previous compilations of the programs in this subdirectory. If the directory is already clean, it may display error messages saying it cannot remove files. Finally, you can run the `Compile.sh` script.
+2. Within your copy of the directory, run the following commands:  
+`module load anaconda`  
+`rm -r build`  
+`mkdir build`  
+`cd build`  
+`python -m venv env-alf`  
+`source env-alf/bin/activate`  
+``cmake .. -DCMAKE_INSTALL_PREFIX=`pwd` ``  
+`make install`  
+The `module load anaconda` uses a working version of anaconda and python from the cluster and uses it as a starting point to make your copy of python that you will add ALF to. This saves you the trouble of installing anaconda. `rm -r build` deletes the previous installation, if there was one. `python -m venv env-alf` makes a new python virtual environment based on the python in the anacoda module you loaded. `source env-alf/bin/activate` activates that virtual environment so you can install ALF in it. Any time you want to use ALF, you have to source that same file to activate that copy of python. The remaining commands setup the installation with cmake and then perform the installation.
 
-3. Going back to your copy of the directory, now `cd` into the `alf/dca` subdirectory. Run `Clean.sh` and `Compile.sh` in this directory too. If you're using the nonlinear ALF code, you'll need to repeat this process in `alf/lmalf` as well.
-
-4. Go back to the copy of the directory. You are now ready to install ALF with python. You will probably need to load a nice copy of python first, so you can create a virtual environment from it, and install ALF as a module into that python virtual environment. You can load a good copy of python with
-`module load anaconda/2022.05`
-Next, run `Setup.sh`. This will create a virtual environment, and then install ALF into it with pip. If anything goes wrong, or you need to change something and install again, you can delete this installation by removing the `alf.egg-info` and `env-alf` subdirectories and the `setupenv` files. Finally run
-`module rm anaconda/2022.05`
+3. If you want to use your ALF immediately, you should run  
+`module rm anaconda`
 to remove this version of python from your path, as it interferes with MPI applications.
 
-ALF is now installed as a python module inside a python virtual environment. You can load this python virtual environment at any time by sourcing the file `setupenv` that `Setup.sh` created in this directory, or you can directly copy the line contained in the file and put it into your scripts. To use ALF within a python script, you can include the line `import alf` near the top of the python script.
+ALF is now installed as a python module inside a python virtual environment. You can load this python virtual environment at any time by loading the modules from step 1, and then sourcing the file `build/env-alf/bin/activate`. (Note you will need the full absolute path to this file.) Do this at the beginning of any script invoking ALF. To use ALF within a python script, you can include the line `import alf` near the top of the python script.
 
 ## Conda
 
@@ -117,7 +123,6 @@ If you have a Mac, you will probably wish to forward graphical user interfaces (
 
 VMD is a software that lets you visualize molecules and simulations. VMD is slightly better than PyMol for watching trajectories. More information and installation instructions are available at  
 [https://www.ks.uiuc.edu/Research/vmd/](https://www.ks.uiuc.edu/Research/vmd/)  
-For Mac, the most recent version 1.9.4 should work fine, for Windows, you may need to install 1.9.3 for it to work correctly.
 
 ## PyMol
 
@@ -131,4 +136,4 @@ Note that it is probably only useful to install PyMol on your local machine as f
 
 ## ParamChem
 
-ParamChem is the software that generates CHARMM CGenFF force field files for simulations including small molecules or ligands. You can email [info@silcsbio.com](info@silcsbio.com) to request a license for ParamChem.
+ParamChem is the software that generates CHARMM CGenFF force field files for simulations including small molecules or ligands. You can email [info@silcsbio.com](info@silcsbio.com) to request a license for ParamChem. The license is expired for the lab copy of ParamChem, so contact Professor Hayes if you need ParamChem.

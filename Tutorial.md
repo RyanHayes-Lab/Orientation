@@ -41,7 +41,7 @@ Remember, you should never run CHARMM from the login nodes ([Cluster.md](Cluster
 `#SBATCH -p free`  
 `#SBATCH --time=240 #Maximum time in minutes that job will take`  
 `#SBATCH --ntasks=1`  
-`/data/homezvol0/rhayes1/CHARMM_EXE/gnu/charmm -i helloworld.inp`  
+`/dfs8/rhayes1_lab/bin/CHARMM_EXE/gnu/charmm -i helloworld.inp`  
 named HelloWorldCHARMM.sh. You may run this slurm script by executing  
 `sbatch HelloWorldCHARMM.sh`
 
@@ -50,6 +50,8 @@ However, this CHARMM script just prints "Hello World", it doesn't do molecular d
 ## 1.2 System Setup
 
 CHARMM-GUI is the easiest way to set up systems. You upload a pdb file from the pdb or one that you have edited, and it will solvate it for you, adding water and ions. As time goes on, you will learn to setup the system yourself, using other tools like mmtsb, and using propka to determine the ionization state of titratable residues in your protein. We'll use CHARMM-GUI to set up a standard molecular dynamics simulation without λ dynamics.
+
+To perform mutations to L99 (pH 3.0), M106 (pH 3.0), V149 (pH 5.4), and F153 (pH 3.0), you will need to set up two copies of the folded state with CHARMM-GUI, one at each pH, and four different pentapeptides to mimic the four unfolded ensembles, each centered on the mutating residue. No mutations are introduced in CHARMM-GUI, that comes later in the tutorial.
 
 The first thing you’ll need to do is sign up for an account on CHARMM-GUI. Use your UCI email to do so. Once you have an account, you can click on the "Input Generator" link in the grey "CHARMM-GUI" box on the left. On the next page you’ll click on the "Solution Builder" link in the grey "Input Generator" box on the left. Enter the PDB code next to the box that says "Download PDB File:" - you should find the four character PDB code for T4 lysozyme in the manuscript. Then click the "Next Step: Select Model/Chain" in the lower right corner.
 
@@ -61,7 +63,7 @@ This page allows you to make all sorts of modifications to the PDB file. "System
 
 You won’t need to select anything in the "Mutation:" row, this is used if the native sequence you want to make mutations to is different from the sequence in the PDB. You’ll be adding your mutations on top of the native sequence later in this tutorial.
 
-The "Protonation:" row is fairly important. On this row you set the protonation state of various titratable residues in your protein (and possibly in your ligands).
+The "Protonation:" row is fairly important. On this row you set the protonation state of various titratable residues in your protein (and possibly in your ligands). Determining protonation states could take an hour or two, and may require you to come back to CHARMM-GUI later.
 
 First you need to determine the protonation states you want. Upload your pdb to the cluster. Then run the following commands on it to analyze it with propka:  
 `export PYTHONPATH=/dfs8/rhayes1_lab/bin/propka`  
@@ -74,9 +76,9 @@ This will produce a file named `1l63.pka`. If you scroll down to `SUMMARY OF THI
 `-- etc --`  
 Next we need to choose protonation states based on these pkas. If the pH is below the pka, the residue will be protonated, otherwise it will be deprotonated. At a pH of 3, ASP 10, ASP 20, and ASP 61 will be protonated while ASP 47 will be deprotonated. If you're setting up the unfolded ensemble, it is more appropriate to use the model-pka column, so all residues (or all residues that show up in the pentapeptide) would be protonated. Generally you should check ASP, GLU, HIS, and LYS. ARG, TYR, and CYS are unlikely to titrate. You may see 99 sometimes for CYS, this happens if propka thinks it is forming a disulfide. N+ refers to the N terminus, usually protonated and positively charged as described above.
 
-HIS is an extra nuissance because it has three protonation states: protonated on the delta nitrogen (HSD), protonated on the epsilon nitrogen (HSE), or protonated on both nitrogens (HSP). If propka says the histidine is protonated, then use HSP. Otherwise you have to decide whether to put the remaining proton on the delta or epsilon nitrogen. In the unfolded state, HSE is marginally more stable, so use it, but in the folded state, you will need to open up VMD or PyMol (see how to install them in [Installation.md](Installation.md)) to see whether there are hydrogen bond donors or acceptors near the delta or epsilon nitrogens that would bias the protonation state one way or the other. If it's too close to tell or the HIS is fully solvent exposed, use HSE.
+HIS is an extra nuissance because it has three protonation states: protonated on the delta nitrogen (HSD), protonated on the epsilon nitrogen (HSE), or protonated on both nitrogens (HSP). If propka says the histidine is protonated, then use HSP. Otherwise you have to decide whether to put the remaining proton on the delta or epsilon nitrogen. In the unfolded state, HSE is marginally more stable, so use it, but in the folded state, you will need to open up VMD or PyMol (see how to install them in [Installation.md](Installation.md)) to see whether there are hydrogen bond donors or acceptors near the delta or epsilon nitrogens that would bias the protonation state one way or the other. If it's too close to tell or the HIS is fully solvent exposed, use HSE. Fortunately in T4 lysozyme, there is only one HIS, and in the folded state at our pH values it is protonated as HSP.
 
-Once you've decided on all the protonation states, note them down somewhere (this information goes in the methods section when you write a paper), and enter them into CHARMM-GUI.
+Once you've decided on all the protonation states, note them down somewhere (this information goes in the methods section when you write a paper), and enter them into CHARMM-GUI. CHARMM-GUI only needs you to enter unusual protonations. ASP is deprotonated by default, so you only need to include protonated ASP as ASPP. Likewise GLU is deprotonated by default, so you only need to include protonated GLU as GLUP. The pKa of HIS is close enough to neutral that HIS should always be specified as HSP, HSD, or HSE. LYS is pronated by default, so you oly need to iclude deprotonated LYS as LSN.
 
 "Disulfide Bonds:" is also important, as CYS residues close to eachother in an oxidizing environment will form covalent bonds, but this protein doesn't have any, so you don't need to do anything here.
 
@@ -84,7 +86,7 @@ When ready click on "Next Step: Generate PDB".
 
 Next you'll set up the periodic boundary conditions. Molecular dynamics typically use periodic boundary conditions so that if an atom goes out one side of the box, it comes back in the other side. This is done because boxes are typically small, and the artifacts (errors) introduced by periodic boundary conditions are significantly less than the artifacts from surface effects of having the protein so close to a solvent-vacuum interface. For normal systems, placing 10 Angstroms of water on each side (so 20 Angstroms to the other side of the protein) is considered sufficient, though for strongly charged molecules like RNA, more distance may be necessary. Thus for the folded structure, you can select "Fit Waterbox Size to Protein Size" and choose "Enter Edge Distance:" as 10. The rectangular "Waterbox type:" is the most common. The alternative octahedral is actually better as it has 23% fewer atoms for the same periodic image distance, and thus runs faster. The fastest option rhombic dodecahedron has 29% fewer atoms, but is not available on CHARMM-GUI. If you have a very large system and need the extra speedup, I can share system setup scripts for rhombic dodecahedron. If you are setting up the unnfolded ensemble, it is likely to fluctuate in size, so click on "Specify Waterbox Size:" and set it to 40 Angstroms.
 
-For ions you should generally mimic the experimental conditions if you can find them. Otherwise the salinity of the human body is about 150 mM, with mostly Na+ outside cells and K+ inside cells, so use the salt concentration most appropriate for where the protein generally resides. (The anions in living organisms are generally not Cl-, but it is a reasonable simplifying approximation.) Set your ion conditions appropriately here.
+For ions you should generally mimic the experimental conditions if you can find them. Otherwise the salinity of the human body is about 150 mM, with mostly Na+ outside cells and K+ inside cells, so use the salt concentration most appropriate for where the protein generally resides. (The anions in living organisms are generally not Cl-, but it is a reasonable simplifying approximation.) Set your ion conditions appropriately here. The T4 lysozyme paper used specific salt conditions, find and use those conditions mentioned in the paper.
 
 Then click on "Next Step: Solvate Molecule".
 
@@ -128,19 +130,136 @@ At this point you can download the step5 `.psf` and `.dcd` files, and use them t
 
 ## 2. Multisite λ Dynamics
 
-WORKING HERE
+In this step we add the additional atoms necessary for alchemical perturbations with λ dynamics to the system, and create a directory called prep that ALF will use to run λ dynamics in the next step.
 
-WORKING - put stuff on files Initialize.py into lab intro
+Other tutorials for setting up λ dynamics are available. In August 2023 our group helped present a workshop on λ dynamics [https://github.com/BrooksResearchGroup-UM/MSLD-Workshop](https://github.com/BrooksResearchGroup-UM/MSLD-Workshop) which includes recordings. See the sixth lesson [https://github.com/BrooksResearchGroup-UM/MSLD-Workshop/tree/main/6ProteinMutation](https://github.com/BrooksResearchGroup-UM/MSLD-Workshop/tree/main/6ProteinMutation) .
 
-Information on how to set up MSλD runs with CHARMM-GUI is currently available in  
-`/dfs8/rhayes1_lab/rhayes1/75_MSLD/03_ProteinTemplate/version3`  
-Check out the mdcharmmgui directory for initial setup of the non-alchemical molecular dynamics section as described in section 1.1 above, then check out the alchemical setup in msldcharmmgui.
+There is also a set of directions for setting up protein mutations on hpc3 at `/share/crsp/lab/rhayes1/share/git/pert_aa` . The `aa_stream` directory contains the most up to date scripts for protein perturbations, so you should use it. Ignore the `mdsetup` and `msldsetup` directories, these are for automating system setup if you have too many systems for CHARMM-GUI. Use the `mdcharmmgui` and `msldcharmmgui` directories. `mdcharmmgui` is largely redundant with the previous section, this section will explain the procedures in `msldcharmmgui` .
 
-The adaptive landscape flattening python module that runs λ dynamics requires all system specific setup files, including the `toppar` directory, to be included in a directory called `prep`.
-Consequently, in order for the `toppar.str` file generated by CHARMM-GUI to work with λ dynamics, you need to either change every file name in `toppar.str` to begin with `prep/` (don't do this), or a more elegant solution is to have the script create a soft link so files can be referenced by their original names. Soft links are files that point to the address of another file, they are like low memory copies, and they are created with `ln -s`.
-The `system` command can be used to execute a bash command inside a CHARMM script. Thus, putting  
+Essentially, ALF will follow instructions in a file called `alf_info.py` to run dynamics using its own CHARMM script, and at some point that CHARMM script will call a CHARMM script you create to set up the molecular system. That means your CHARMM script, we'll call it `system.inp` , should closely mimic `step5_production.inp` , but with the parts that run dynamics stripped out, and with a few extra commands to invoke `aa_stream` to set up the alchemical part of the calculation. You should also be sure you have a working installation of ALF by following the instructions in [Install.md](Install.md) , as the scripts in `msldcharmmgui` use ALF to test the setup.
+
+We'll walk through the contents of these files, comparing `step5_production.inp` and its analogue `system.inp` so you understand them, pointing out necessary edits to other files along the way.
+
+`step5_production.inp` begins with a line like `DIMENS CHSIZE 5000000 MAXRES 3000000` . This is removed from `system.inp` , because it must be at the beginning of the first CHARMM script that CHARMM starts reading, and `system.inp` is called by other CHARMM scripts. For larger systems you may need to add this line to the beginning of those other CHARMM scripts: `4SetupBlock.inp` here and `msld_flat.inp` and `msld_prod.inp` later when you run ALF. This sets the size of various CHARMM arrays for larger systems.
+
+Instead, at the beginning of `system.inp` , we place the command  
+`stream "prep/alchemical_definitions.inp"`  
+This file, `alchemical_definitions.inp` contains information about what mutations you want in your system, and you should edit it. Set `resid1` to indicate which site you are mutating. If you are mutating multiple sites in the same simulation (you are not in this project, run the four sites in different simulations), you may enter the resid of the second mutation site as `resid2` and so on. The first mutation at a site, here `s1seq1` is always listed as `0` for the native residue found in the non-alchemical .psf (see below). If you have a second mutating site, its first mutation `s2seq1` will also be listed as `0`. I often place the identity of the native residue after a comment character `!`, but this is purely optional. Subsequent mutations at each site are listed by their one letter amino acid code, e.g. `a` for alanine, `c` for cysteine, `d` for aspartic acid, and so on. Histidine protonation states are selected here as `h` for HSD, `b` for HSE, and `j` for HSP. Thus the second mutation at site one (the first thing we are mutating to from native) is `s1seq2`, the third mutation is `s1seq3`, and so on. Next, list the segid of the mutating residue for each site. For site 1, this is `segid1`. The segid can be found in the .psf or .crd files, and for CHARMM-GUI output is usually PROA for a single chain protein like T4 lysozyme. Next the terminal information for the N-terminus and C-terminus of each mutated segid is listed. (If a segid is not mutated, you may omit it from these variables.) `nterdel_proa` and `cterdel_proa` define whether you are doing a terminal deletion on the segid PROA. Always leave these as 0. `nterres_proa` and `cterres_proa` contain the first and last resid of the chain. For T4 lysozyme this will be 1 and 162 in the folded state, and two residues before and after your mutation site in the unfolded state. `ntercap_proa` and `ctercap_proa` list the two terminal patches you selected in CHARMM-GUI, and `nterc_proa` and `cterc_proa` contain a single character code for this terminal patch. These terminal variable definitions typically have no effect unless your mutation is near the terminii.
+
+You should edit `alchemical_definitions.inp` to contain the mutations you want for your system.
+
+Next, the simple command `stream toppar.str` load topology files (.rtf files) and parameter files (.prm files). The .rtf files contain information to tell CHARMM what atoms are in any residue, what their atom types and charges are, and how they are connected together. The .prm files tell CHARMM what the equilibrium bond lengths, spring constants, van der waals parameters, and other parameters are that go into the potential energy function. Roughly speaking, the .rtf tells you what terms are in the potential energy function, and the .prm tells you what the constants in those terms are. In `system.inp` this command is replaced with `stream prep/toppar.str` because all files must be placed inside the `prep` directory for ALF to work properly.
+
+The file `toppar.str` refers to a bunch of files inside the `toppar` directory. However, the `toppar` directory must also be placed inside `prep` . Consequently, in order for the `toppar.str` file generated by CHARMM-GUI to work with λ dynamics, you need to either change every file name in `toppar.str` to begin with `prep/` (don't do this), or a more elegant solution is to have the script create a soft link so files can be referenced by their original names. Soft links are files that point to the address of another file, they are like low memory copies, and they are created with `ln -s`. The `system` command can be used to execute a bash command inside a CHARMM script. Thus,  
 `system "ln -s prep/toppar toppar"`  
-at the start of your `toppar.str` file should ensure it still works with ALF.
+has been placed before `stream prep/toppar.str` to ensure it still works with ALF.
+
+Next,  
+`open read unit 10 card name step3_pbcsetup.psf`  
+`read psf  unit 10 card`  
+sets up the .psf (protein structure file) of the system. Note, these files are moved to `prep` in `system.inp`. Typically, CHARMM scripts read a sequence of residues for your protein (one segid at a time), and use the information in the .rtf files to decide what atoms are in the system based on your sequence of residues, then you generate a .psf, and add patches to it, such as the protonation and disulfide patches mentioned in the previous section. This involves a lot of lines of code to setup, but at the end you can write out a .psf file to save the list of all the atoms, bonds, angles, dihedrals, etc. in your system, and CHARMM-GUI saves this .psf file and reads it in, rather than generating the .psf every time. We'll make modifications to this non-alchemical .psf later, using the variables you defined in `alchemical_definitions.inp`.
+
+At this point CHARMM knows all the atoms in your system, but it doesn't know where they are. The commands  
+`open read unit 10 card name step3_pbcsetup.crd`  
+`read coor unit 10 card`  
+read the coordinates out of a .crd file. You may also read coordinates out of a .pdb file, but .pdb files have annoying limits on the number of atoms, so .crd files cause fewer errors.
+
+`stream step3_pbcsetup.str`  
+Reads information about the periodic boundary conditions (the box size, box angles, and fft grid sizes) out of a stream (.str) file.
+
+The coordinates and box sizes read in already were before equilibration during `step5_production.inp`. To read in the new coordinates and box size, we read the restart file `step5_1.rst`  
+`    bomlev -5`  
+`    open read  unit 11 card name step5_@pcnt.rst`  
+`    read coor dynr curr unit 11`  
+`    bomlev  0`  
+` `  
+`    calc A = ?XTLA`  
+`    calc B = ?XTLB`  
+`    calc C = ?XTLC`  
+and overwrite the values of `A`, `B`, and `C` from `step3_pbcsetup.str`.
+
+At this point, the non-alchemical system is set up, so `system.inp` interrupts to stream three important files from `aa_stream` to set up the alchemical portion of the system  
+`stream "prep/aa_stream/patchloop.inp"`  
+`stream "prep/aa_stream/selectloop.inp"`  
+`stream "prep/aa_stream/deleteloop.inp"`  
+These files use the variables defined in `alchemical_definitions.inp` and by `variables1.inp` which ALF created from `alf_info.py` to set up the alchemical perturbations. `patchloop.inp` applies patches (modifications) to the .psf to add additional alchemical atoms and their bonds, angles, dihedrals, etc. `selectloop.inp` saves lists of these alchemical atoms as selections, so the appropriate selections can be scaled by λ later. `deleteloop.inp` deletes some extra angles and dihedrals that were accidentally added to the .psf during `patchloop.inp`.
+
+Next, we continue to setting up the periodic boundary conditions with  
+`open read unit 10 card name crystal_image.str`  
+`CRYSTAL DEFINE @XTLtype @A @B @C @alpha @beta @gamma`  
+`CRYSTAL READ UNIT 10 CARD`  
+` `  
+` `  
+`!Image centering by residue`  
+`IMAGE BYRESID XCEN @xcen YCEN @ycen ZCEN @zcen sele resname TIP3 end`  
+`IMAGE BYRESID XCEN @xcen YCEN @ycen ZCEN @zcen sele segid IONS end`  
+Periodic boundary conditions are used because the surface of water behaves differently from the interior, so to prevent the surface of the water from distorting the protein, we get rid of the surface by introducing periodic boundary conditions. The artifacts due to periodic boundary conditions are generally smaller than the artifacts from simulating a tiny droplet of water.
+
+The remainder of `step5_production.inp` is dropped as the covers setting up the nonbonded options (done here by `nbond.str`) and running dynamics, which are performed by the CHARMM scripts that stream `system.inp`.
+
+One still must apply alchemical scaling to the appropriate atoms. This is done in `system.inp` by the command  
+`stream "prep/aa_stream/blocksetup.inp"`  
+Again, this script is controlled by the variables in `alchemical_definitions.inp`, and you should not need to edit it, unless you are also mutating ligands, your are using modified implicit constraints, or you are using modified biases, as described below.
+
+Next, you should edit `alf_info.py` to reflect your system. Be sure that `'enginepath'` points to the correct CHARMM executable. `'nsubs'` reads the number of substituents at each site from a file called `nsubs`. You should edit this to include the number of substituents at each site. This is one for the native plus one for each mutant. So for V149 with 5 mutations to CIMST, nsubs is 6. (For the 3 site system mentioned later in the paper with one mutation to M at 3 sites, nsubs is `2 2 2`.) If any mutations in your system are charged, you should add a `q` field to `alf_info.py`, which is a list of the charges of each substituent in order. This will apply the discrete solvent charge changing correction.
+
+By default ALF uses the old `linear2018` loss function. You may wish to add `alf_info['loss']='nonlinear2024'` to your `alf_info.py` file to use a more updated loss function.
+
+By default ALF uses the old `bcxs2018` bias. This bias will work fine for this exercise, but if you have significantly more mutations, you may wish to invoke the `bcxstu2026` bias with `alf_info['bias']='bcxstu2026'`. If you do, you will need to modify `aa_stream/blocksetup.inp` to include there biases. Change  
+`   calc nbiaspot = 5 * ( @nblocks * ( @nblocks - 1 ) ) / 2`  
+`   ldbi @nbiaspot`  
+to  
+`   calc nbiaspot = 9 * ( @nblocks * ( @nblocks - 1 ) ) / 2`  
+`   ldbi @nbiaspot`  
+and change  
+`            ldbv @ibias @ip1 @jp1 6 0.0 @cs@@{si}s@@{ii}s@@{sj}s@@{jj} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @ip1 @jp1 10 -5.56 @xs@@{si}s@@{ii}s@@{sj}s@@{jj} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @ip1 @jp1 8 0.017 @ss@@{si}s@@{ii}s@@{sj}s@@{jj} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @jp1 @ip1 10 -5.56 @xs@@{sj}s@@{jj}s@@{si}s@@{ii} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @jp1 @ip1 8 0.017 @ss@@{sj}s@@{jj}s@@{si}s@@{ii} 0`  
+`            calc ibias = @ibias + 1`  
+to  
+`            ldbv @ibias @ip1 @jp1 6 0.0 @cs@@{si}s@@{ii}s@@{sj}s@@{jj} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @ip1 @jp1 10 -5.56 @xs@@{si}s@@{ii}s@@{sj}s@@{jj} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @ip1 @jp1 8 0.012 @ss@@{si}s@@{ii}s@@{sj}s@@{jj} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @ip1 @jp1 8 -1.012 @ts@@{si}s@@{ii}s@@{sj}s@@{jj} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @ip1 @jp1 12 0.012 @us@@{si}s@@{ii}s@@{sj}s@@{jj} 2`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @jp1 @ip1 10 -5.56 @xs@@{sj}s@@{jj}s@@{si}s@@{ii} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @jp1 @ip1 8 0.012 @ss@@{sj}s@@{jj}s@@{si}s@@{ii} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @jp1 @ip1 8 -1.012 @ts@@{sj}s@@{jj}s@@{si}s@@{ii} 0`  
+`            calc ibias = @ibias + 1`  
+`            ldbv @ibias @jp1 @ip1 12 0.012 @us@@{sj}s@@{jj}s@@{si}s@@{ii} 2`  
+`            calc ibias = @ibias + 1`  
+
+By default, ALF used old fnex implicit constraints `fnex2011`. These implicit constraints are ineffective at sampling near the end states beyond 8 or 9 substituents, and never sample the exact end states at all, resulting in a tiny error (about 0.1 to 0.2 kcal/mol) in free energy results. To sample more substituents with the old fnex bias, you can add a theta bias by invoking the `impcons` value `fnexdozen2024` in `alf_info.py` and changing  
+`   msld @blockassign fnex @fnex`  
+`   msma`  
+to
+`   msld @blockassign fnex @fnex`  
+`   msma`  
+`   thbv inde all auto`  
+You can use piecewise implicit constraints to sample the exact endpoints by adding the `fnpwise2026` value to the `impcons` key in `alf_info.py` with `alf_info['impcons']='fnpwise2026'` and by modifying `aa_stream/blocksetup.inp` from  
+`   msld @blockassign fnex @fnex`  
+`   msma`  
+to  
+`   msld @blockassign fnpw`  
+`   msma`  
+`   thbv flat all 0.35 59.2 ! w=0.35, k=100kT`  
+
+With these described modifications and explanations, now take a look at `RunSetup.sh`. You should now understand why this file is copying the files it is using from the CHARMM-GUI directory and how they are used to set up the alchemical system. Change the environment setup, CHARMM path, ALF path, CHARMM-GUI directory path and aa_stream directory path to point at the right things, and submit this script with  
+`bash SubSetup.sh`  
+You can check the contents of `outrun` and `errrun` to make sure the script ran correctly.
 
 ## 3. Adaptive Landscape Flattening
 
@@ -150,23 +269,27 @@ Adaptive landscape flattening (ALF) is required to choose optimal biases that al
 
 See installation instructions in [Installation.md](Installation.md)
 
-Examples for how to run ALF are located in the `examples` directory of your ALF directory.
+Examples for how to run ALF are located in the `examples` directory of your ALF directory. You can follow the `README` there to test ALF if you don't trust the prep directory you just created.
 
-## 3.2 ALF Best Practices
+## 3.2 ALF routines
 
-Inside the `examples` directory is the `engines` directory, which has example ALF scripts for several platforms. `bladelib` is the fastest of these that runs inside CHARMM, so we will use it. There are three main alf subroutines: `runflat`, `runprod`, and `postprocess`. You should read their documentation (see the alf `README.md`, and the beginning of `alf/runflat.py`, `alf/runprod.py`, and `alf/postprocess.py`). Inside the `examples` directory, these subroutines are housed inside slurm scripts `runflat.sh`, `runprod.sh`, and `postprocess.sh`, which are submitted to slurm by `subsetAll.sh`.
+Inside the `examples` directory is the `engines` directory, which has example ALF scripts for several platforms. `bladelib` is the fastest of these that runs inside CHARMM, so we will use it. This is done by adding the argument `engine='bladelib'` to the end of the following alf subroutines. There are three main alf subroutines: `runflat`, `runprod`, and `postprocess`. You should read their documentation (see the alf `README.md`, and the beginning of `alf/runflat.py`, `alf/runprod.py`, and `alf/postprocess.py`). Inside the `examples` directory, these subroutines are housed inside slurm scripts `runflat.sh`, `runprod.sh`, and `postprocess.sh`, which are submitted to slurm by `subsetAll.sh`.
 
-The `runflat` subroutine is used to run several short simulations to optimize the biases, from it's first argument to its second argument, using the third argument as the number of equilibration time steps and the fourth argument as the number of sampling time steps. Previous numerical experiments suggested discarding the first quarter of the data provides optimal sampling, so the fourth argument should be three times the third. Typically 100 or 200 short simulations of 100 ps (25 ps equilibration and 75 ps sampling) are run to get a rough idea of the biases. 100 cycles is sufficient in most cases, but if you're mutating to or from an arginine, you'll need the full 200 cycles. Next `runflat` is run again, this time with about 10 cycles of longer 1 ns simulations to refine the biases. `runflat` is quite fault tolerant. If an error is encountered during a cycle, `runflat` will keep going back and trying it again until it succeeds. If `runflat` crashes and is launched again, it checks to see how far it got the previous time, and begins at the first incomplete cycle.
+The `runflat` subroutine is used to run several short simulations to optimize the biases, from its first argument to its second argument, using the third argument as the number of equilibration time steps and the fourth argument as the number of sampling time steps. Previous numerical experiments suggested discarding the first quarter of the data provides optimal sampling, so the fourth argument should be three times the third. Typically 100 or 200 short simulations of 100 ps (25 ps equilibration and 75 ps sampling) are run to get a rough idea of the biases. 100 cycles is sufficient in most cases, but if you're mutating to or from an arginine, you'll need the full 200 cycles. Next `runflat` is run again, this time with about 10 cycles of longer 1 ns simulations to refine the biases. `runflat` is quite fault tolerant. If an error is encountered during a cycle, `runflat` will keep going back and trying it again until it succeeds. If `runflat` crashes and is launched again, it checks to see how far it got the previous time, and begins at the first incomplete cycle.
 
-The `runprod` subroutine runs some portion of a production simulation. Typically these are launched in groups of 5 by another script. Each individual in the group is launched as a slurm job array with a slurm option like `--array=1-4%1`, which in this case would run four copies of the job, one at a time. WORKING HERE this isn't very clear.
+The `runprod` subroutine runs some portion of a production simulation. Typically these are launched in groups of 5 by another script. Each individual in the group is launched as a slurm job array with a slurm option like `--array=1-4%1`, which in this case would run four copies of the job, one at a time. Each instance of `runprod` is responsible for running some number of ns of simulation. The first argument to `runprod` is the current ALF cycle (one after wherever the previous `runflat` or `postprocess` ended), the second argument is the independent trial token, typically a through e, the third argument is the last ns the previous invokation of `runprod` was responsible for, and the fourth argument is the last ns this invokation of `runprod` is responsible for. These arguments are generally passes in by environment variables from `subsetAll.sh` or calculated from the index within the job array (the first job in the array is responsible for different ns than the second job in the array and so on.)
 
-ALF Best practices...
+After `runprod` invokations conclude, the run can be analyzed with `postprocess`. `postprocess` will make new estimates for the optimal biases and will produce a file called `Result.txt` in the corresponding analysis directory containing dG estimates. To get the ddG folding, subtract dG in the unfolded ensemble from dG in the folded ensemble.
 
-WORKING: add coupling instructions
+## 3.3 ALF best practices
 
-WORKING: add lmalf instructions
+Running a very long production simulation with poor biases will give rather poor results. Thus, it is best to precede long production runs with shorter production runs to refine biases. Starting with a production run of 5 ns, it is best not to extend production runs by more than a factor of 4 or 5 to reach the desired simulation length. Thus, if a 100 ns production run is desired, one should run a 5 ns production, followed by a 20 ns production, followed by a 100 ns production. If the penultimate production run isn't sampling some substituents (i.e. the Result.txt file has some nan values in it), you may wish to run another production of that length before extending to final production, as it may indicate biases are not yet converged.
 
-## 3.3 Cleaning up after ALF
+On our cluster using the free-gpu partition, ALF runs are often interrupted. ALF is rather fault tolerant, but modified versions of `subsetAll.sh` that are more tolerant to faults can be found at `/dfs8/rhayes1_lab/bin/tutorial/alf_preemptable`
+
+As described above, ALF default behavior is to use the linear2018 loss, the bcxs2018 bias, and the fnex2011 implicit constraint. These are no longer best practice. The nonlinear2024 loss, and fnpwise2026 implicit constraint are best practice. The bcxs2018 bias is best for two substituets, the bcxstu2026 bias is best for 20 substituents, so choose depending on your system. Modify your `alf_info.py` and `blocksetup.inp` files to specify your prefered options.
+
+## 3.4 Cleaning up after ALF
 
 ALF generates a lot of extra files. These files make working with and debugging ALF easier, but waste space once a simulation is finished. You can erase these files by running  
 `rm -r run+([0-9])`  
@@ -183,12 +306,15 @@ ALF generates a lot of extra files. These files make working with and debugging 
 
 If you are especially desperate for space, then after publication you can erase the spatial trajectories with  
 `rm -r run*/dcd`  
+To generate less trajectory data, you can add the `nsavc=50000` argument to the end of your `runprod` command, as this controls how frequently spatial trajectory frames are printed.
 
 You should probably never erase the alchemical trajectories of a published work, but you can erase them with  
 `rm -r run*/res`  
 if you need to.
 
 ## 4 CHARMM Scripts and Documentation
+
+At this point you have completed the tutorial. You may continue reading to learn more about CHARMM and what the scripts you have written actually do.
 
 ## 4.1 CHARMM Scripts
 
@@ -223,7 +349,9 @@ This is useful in cases where some part of a calculation might be repeated, and 
 
 The `stop` command tells CHARMM to stop running whenever it reaches that point in the script. Often when debugging, placing a stop command can let you focus on working out problems up to that point before trying to move on.
 
-if, goto, etc. Also pdb, crd, par, rtf, psf WORKING HERE
+CHARMM provides the control flow commands `if` and `goto`. These are sufficient to produce if-elseif-else-endif constructs, functions, for loops, while loops, ad many other programming constructs, but they are a bit clunky. Eventually our lab will switch to pyCHARMM, making these CHARMM scripting commands obsolete. For `if`, you may place an if statement followed by a single command on one line, or you can place `if [comparison] then` followed by several lines of code, followed by `endif`. `else` and `else if` are also supported. The `goto` command is invoked as `goto [place]`, and will then search the CHARMM script for `label [place]` an will resume execution there. You can replace [place] with any label, name, or token you want. Together `if` and `goto` statements can create a for loop by saving a variable, entering a loop that begins with a label, incrementing the variable, and then using an if statement to check if the variable is still below the desired number of iterations, and if so using goto to return to the label.
+
+The pdb, crd, par, rtf, and psf commands have been described in more detail above during the λ dynamics setup section.
 
 ## 4.2 CHARMM Engines
 
@@ -235,10 +363,13 @@ to relax the structure to a lower energy state, in this case with 100 steps of s
 `dyna ! followed by a whole bunch of options I don’t want to cover`  
 to run a molecular dynamics simulation. Each of these commands must compute the energy and force and do something with it, but there are more than half a dozen places in the CHARMM source code that do this calculation, and which one you choose will depend on what you’re trying to do, and the computational resources available.
 
-What about GPUs? How can we see the status of our job? Also add vi fix and domdec commands.
+There are several molecular dynamics engines inside of CHARMM, each of which uses different source code to do roughly the same thing. These engines differ primarily in their efficiency. There is the standard engine which uses Fortan code on CPUs and is very slow. There is the domdec engine, which can run on CPUs, CPUs and GPUs, or primarily GPUs. The primarily GPU version of domdec is still about a factor of five slower than BLaDE and OpenMM. BLaDE is an engine I wrote to run lambda dynamics fast on GPUs. OpenMM is a software developed outside of CHARMM to run fast on GPUs, but it is flexible enough to be called as a library from CHARMM, unfortunately it does not yet run λ dynamics within CHARMM.
 
-BLaDE syntax...  
-`blade prmc iprs 100 pref 1 prdv 100 -`
+BLaDE can be invoked by adding the blade keyword to any energy or minimization command. To add BLaDE to a dynamics command add  
+`blade prmc iprs 100 pref 1 prdv 100 -`  
+for constant pressure simulations or just  
+`blade -`  
+for constant volume simulations.
 
 ## 4.3 CHARMM Documentation
 

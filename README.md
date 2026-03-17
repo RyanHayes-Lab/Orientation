@@ -1,5 +1,7 @@
 # Hayes Group New Student Orientation
  
+New students joining the group should begin by reading [Expectations.md](Expectations.md) and [Startup.md](Startup.md). You should then dive into [Cluster.md](Cluster.md) to learn how to use bash, linux, and the hpc3 cluster. Next you can begin reading some papers from [Literature.md](Literature.md) to learn how our methods work while concurrently working through [Tutorial.md](Tutorial.md). Some programs used in the tutorial may require you to follow instructions in [Installation.md](Installation.md) to download and install them.
+
 See lab values and expectations in  
 [Expectations.md](Expectations.md)
 

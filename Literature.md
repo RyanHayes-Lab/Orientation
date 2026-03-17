@@ -69,7 +69,7 @@ Hayes, R. L.; Cervantes, L. F.; Abad Santos, J. C.; Samadi, A.; Vilseck, J. Z. &
 How to Sample Dozens of Substitutions per Site with λ Dynamics
 Journal of Chemical Theory and Computation, 2024, 20, 6098-6110  
 [https://pubs.acs.org/doi/10.1021/acs.jctc.4c00514](https://pubs.acs.org/doi/10.1021/acs.jctc.4c00514)  
-First paper including site saturation mutagenesis, also introduces nonlinear ALF loss function.
+First λ dynamics paper including site saturation mutagenesis, also introduces nonlinear ALF loss function.
 
 ## Other λ Dynamics Papers
 
