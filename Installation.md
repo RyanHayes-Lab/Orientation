@@ -25,7 +25,7 @@ Next, run the following script from the directory that contains the copy of `dev
 `export FFTW_HOME=$FFTW_DIR`  
 `mkdir gnu`  
 `cd gnu`  
-`../dev-release/configure --with-gnu --without-mkl --without-openmm --with-blade -u --repdstr --with-nvtx -p ./inst &> ../config.log`  
+`../dev-release/configure --with-gnu --without-mkl --without-openmm --with-blade -u --repdstr --with-nvtx --without-pycharmm --without-library -p ./inst &> ../config.log`  
 `make -j10 install VERBOSE=1 &> ../make.log`
 
 If you wish to install pyCHARMM instead, (a python interface to CHARMM), you may do so with  
@@ -75,7 +75,7 @@ These are the standard modules you can use to compile most programs on hpc3. You
 The `module load anaconda` uses a working version of anaconda and python from the cluster and uses it as a starting point to make your copy of python that you will add ALF to. This saves you the trouble of installing anaconda. `rm -r build` deletes the previous installation, if there was one. `python -m venv env-alf` makes a new python virtual environment based on the python in the anacoda module you loaded. `source env-alf/bin/activate` activates that virtual environment so you can install ALF in it. Any time you want to use ALF, you have to source that same file to activate that copy of python. The remaining commands setup the installation with cmake and then perform the installation.
 
 3. If you want to use your ALF immediately, you should run  
-`module rm anaconda`
+`module rm anaconda`  
 to remove this version of python from your path, as it interferes with MPI applications.
 
 ALF is now installed as a python module inside a python virtual environment. You can load this python virtual environment at any time by loading the modules from step 1, and then sourcing the file `build/env-alf/bin/activate`. (Note you will need the full absolute path to this file.) Do this at the beginning of any script invoking ALF. To use ALF within a python script, you can include the line `import alf` near the top of the python script.
@@ -119,6 +119,27 @@ The strength of conda is that you can create separate virtual environements that
 
 If you have a Mac, you will probably wish to forward graphical user interfaces (aka GUIs, aka windows) from the cluster from time to time. This is called x11 forwarding. The program that enables x11 forwarding on Macs is XQuartz. You should download and install it. On windows machines, there are different hoops you have to jump through for x11 forwarding.
 
+## Jupyter
+
+Jupyter is a useful software that lets you run python code in a notebook format, where you can use a GUI (graphical user interface) to interactively execute python code and visualize the output. Jupyter is fairly easy to install with a simple conda command once you have a working conda installation, and is already installed on several anaconda modules on hpc3. Using it on the cluster it trickier, because you have to log in, check out an interactive compute node, then use x11 forwarding to tunnel the GUI back from the compute node to the login node to your local machine.
+
+A procedure that works for me is:  
+`# On the first terminal:`  
+`ssh rhayes1@hpc3.rcic.uci.edu`  
+`srun --pty --time=0-04:00:00 --ntasks=1 --tasks-per-node=8 --cpus-per-task=1 --gres=gpu:1 -p gpu -A rhayes1_lab_gpu --cpu_bind=none bash`  
+`module load anaconda/2022.05`  
+``jupyter notebook --port=45678 --no-browser --ip=`hostname -s` &``  
+Leave this process running on the interactive node with the terminal open. You can change the port number to suite your needs, and be sure to use your username, not mine. The output will give a token you need to log into the jupyter notebook.
+
+Next:  
+`# On another terminal: (-N and -f optional)`  
+`ssh -N -f -L 45678:hpc3-gpu-17-04:45678 rhayes1@hpc3.rcic.uci.edu`  
+Be sure to use your username, the port number you chose in the previous step, and the compute node that you were granted for the interactive job (not `hpc3-gpu-17-04`)
+
+Finally, open up your favorite internet browser, using the token given in step 1:  
+`http://127.0.0.1:45678/?token=1e6ed1461fd5dce44fc10e5154474aa09e1d7f26a678b379`  
+At this point, you should see a jupyter interface, and can navigate to open a jupyter notebook of interest.
+
 ## VMD
 
 VMD is a software that lets you visualize molecules and simulations. VMD is slightly better than PyMol for watching trajectories. More information and installation instructions are available at  
@@ -137,3 +158,17 @@ Note that it is probably only useful to install PyMol on your local machine as f
 ## ParamChem
 
 ParamChem is the software that generates CHARMM CGenFF force field files for simulations including small molecules or ligands. You can email [info@silcsbio.com](info@silcsbio.com) to request a license for ParamChem. The license is expired for the lab copy of ParamChem, so contact Professor Hayes if you need ParamChem.
+
+ParamChem can be run on a .mol2 file using a command like  
+`/dfs8/rhayes1_lab/bin/cgenff/silcsbio.2024.1/cgenff/cgenff molecule.mol2 > molecule.str`  
+A .mol2 file can be generated from a smiles string using open babel (available with a conda download)  
+`obabel molecule.smiles -h --gen3d -O molecule.mol2`  
+but there are better ways to do it for ligand alignment. Discuss with the Mobley lab. The `-h` flag adds hydrogens. Hydrogens can also be added with `h_add` in pymol.
+
+## msld-py-prep
+
+This software package sets up ligand perturbations and is available from github at [https://github.com/Vilseck-Lab/msld-py-prep](https://github.com/Vilseck-Lab/msld-py-prep) . For a tutorial on msld-py-prep use, see [https://github.com/BrooksResearchGroup-UM/MSLD-Workshop](https://github.com/BrooksResearchGroup-UM/MSLD-Workshop) .
+
+## mmtsb
+
+This software can be used for setting up CHARMM simulations. It is installed at `/dfs8/rhayes1_lab/bin/mmtsb` . To use it, source the file `/dfs8/rhayes1_lab/bin/mmtsb/activate` .

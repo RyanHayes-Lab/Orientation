@@ -126,7 +126,7 @@ At this point you can run these scripts with
 `/dfs8/rhayes1_lab/bin/CHARMM_EXE/gnu/charmm -i step5_production.inp`  
 but be sure to do it inside a slurm script, and be sure to request a gpu with `--gres=gpu:1`.
 
-At this point you can download the step5 `.psf` and `.dcd` files, and use them to watch the trajectory of your molecule jiggling around in VMD. This is your first molecular dynamics simulation.
+At this point you can download the `step3_pbcsetup.psf` and `step5_1.dcd` files, and use them to watch the trajectory of your molecule jiggling around in VMD. Load the `.psf` file into vmd first, followed by the `.dcd` file, otherwise VMD has no idea what the numbers in the `.dcd` file mean. Congratulations, this is your first molecular dynamics simulation.
 
 ## 2. Multisite λ Dynamics
 
@@ -286,6 +286,10 @@ After `runprod` invokations conclude, the run can be analyzed with `postprocess`
 Running a very long production simulation with poor biases will give rather poor results. Thus, it is best to precede long production runs with shorter production runs to refine biases. Starting with a production run of 5 ns, it is best not to extend production runs by more than a factor of 4 or 5 to reach the desired simulation length. Thus, if a 100 ns production run is desired, one should run a 5 ns production, followed by a 20 ns production, followed by a 100 ns production. If the penultimate production run isn't sampling some substituents (i.e. the Result.txt file has some nan values in it), you may wish to run another production of that length before extending to final production, as it may indicate biases are not yet converged.
 
 On our cluster using the free-gpu partition, ALF runs are often interrupted. ALF is rather fault tolerant, but modified versions of `subsetAll.sh` that are more tolerant to faults can be found at `/dfs8/rhayes1_lab/bin/tutorial/alf_preemptable`
+
+If you are using replica exchange, an hpc3 cluster update in fall 2025 messed up communication between mpi processes. The following command needs to be added to ALF scripts (e.g. `subsetAll.sh`)  
+`export OMPI_MCA_btl_openib_if_include=mlx5_0`  
+Without this, some nodes use different communication methods, which causes MPI to fail, crashing or hanging the job.
 
 As described above, ALF default behavior is to use the linear2018 loss, the bcxs2018 bias, and the fnex2011 implicit constraint. These are no longer best practice. The nonlinear2024 loss, and fnpwise2026 implicit constraint are best practice. The bcxs2018 bias is best for two substituets, the bcxstu2026 bias is best for 20 substituents, so choose depending on your system. Modify your `alf_info.py` and `blocksetup.inp` files to specify your prefered options.
 

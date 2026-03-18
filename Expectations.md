@@ -10,12 +10,13 @@ There are several values the Hayes group seeks to instill: craftsmanship, curios
 
 ## 3.1 Work
 
-I expect students to work 40-50 hours per week. Less than 40 and you will make slow progress, more than 50 and productivity and enjoyment go down. This total includes coursework and TAing obligations, so if you are taking a class, the amount of time I expect you to spend on research goes down. Unless you're writing a paper, research is a team effort that is most effective in person, so I expect students to be in the office at least 11-4 on weekdays. (You can expect me to be in at least 9-4). I expect students to notify me in advance before vacation or working remotely while traveling.
+I expect graduate students to work 40-50 hours per week. Less than 40 and you will make slow progress, more than 50 and productivity and enjoyment go down. This total includes coursework and TAing obligations, so if you are taking a class, the amount of time I expect you to spend on research goes down. Unless you're writing a paper, research is a team effort that is most effective in person, so I expect students to be in the office at least 11-4 on weekdays. (You can expect me to be in at least 9-4). I expect students to notify me in advance before vacation or working remotely while traveling.
 
 ## 3.2 Group Meeting
 
-Students are expected to attend group meeting every week. See directions to group meeting at
-[https://docs.google.com/document/d/1AGdWI6pEpkVlZ0vJh8WUR1ay7AzAAS7NqA18qJkE0q8/edit?usp=sharing](https://docs.google.com/document/d/1AGdWI6pEpkVlZ0vJh8WUR1ay7AzAAS7NqA18qJkE0q8/edit?usp=sharing)
+Graduate students are expected to attend group meeting every week. See directions to group meeting at  
+[https://docs.google.com/document/d/1AGdWI6pEpkVlZ0vJh8WUR1ay7AzAAS7NqA18qJkE0q8/edit?usp=sharing](https://docs.google.com/document/d/1AGdWI6pEpkVlZ0vJh8WUR1ay7AzAAS7NqA18qJkE0q8/edit?usp=sharing)  
+Note that group meeting is at 101 Theory every other week. Parking there is free, but the Irvine Company will ticket or tow your car if it isn't registered. Email Heruymi Babylon from pharmaceutical sciences to get your car registered.
 
 ## 3.3 Academic Progress
 
